@@ -1,0 +1,116 @@
+@font-face {
+    font-family: Roboto;
+    src: url('fonts/Roboto.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Raleway;
+    src: url('fonts/Raleway.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url('fonts/Montserrat.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.image_container {
+    max-width:600px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.ingredients {
+    width: 700px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+
+    &__list {
+        max-height: 500px;
+    }
+}
+
+ul,ol {
+    font-family: Raleway, sans-serif;
+    column-width: 200px;
+    max-height: 100%;
+    column-gap: 20px;
+    column-fill: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        margin: 0.5rem
+    }
+}
+
+.recipe {
+    background: #faf3e0;
+    color: #333;
+
+    &__page {
+        width: 85%;
+        max-width:1000px;
+        margin: 0rem auto;
+        padding: 1.5rem;
+    }
+
+    &__top {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    &__image {
+        max-width: 100%;
+        display: block;
+        margin: 0 auto 1.5rem;
+        border-radius: 8px;
+
+    }
+
+    &__title {
+        font-family: Montserrat, sans-serif;
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #6a6664;
+    }
+}
+
+.section__title {
+    font-family: Montserrat, sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: #6a6664;
+    border-bottom: 2px solid #3a2ba1;
+    display: inline-block;
+}
+
+.instructions {
+    font-size : 1.2rem;
+    font-family: Raleway, sans-serif;
+    list-style:latin;
+    padding-left : .5rem;
+
+    &__step {
+        margin-top : 0.8rem;
+    }
+    
+    &__separator {
+        border-bottom: 1px rgba(0, 0, 0, 0.199) solid;
+        width: 100%
+    }
+}
+
+body {
+        background: #ebe5d9;
+}

@@ -1,0 +1,73 @@
+@font-face {
+    font-family: Roboto;
+    src: url('fonts/Roboto.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Raleway;
+    src: url('fonts/Raleway.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url('fonts/Montserrat.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.html {
+    background-color: red;
+}
+
+.bookTitle {
+    display: flex;
+    justify-content: center;
+    font-size: 5rem;
+    line-height: 4.5rem;
+    text-align: center;
+    margin-bottom:2rem
+}
+
+.toc {
+    &__label {
+        display: flex;
+        justify-content: center;
+        font-size: 3rem;
+        font-family: Roboto
+
+
+    }
+
+    &__content {
+        margin: auto;
+        width: 80%;
+        font-family: Raleway
+    }
+}
+
+.category {
+    margin-bottom: 20px;
+    &__label {
+        display :flex;
+        justify-content : center;
+        font-size : 2rem ;
+        margin-bottom: 1rem;
+    }
+}
+
+.recipe {
+    &__title {
+        font-size : 1rem;
+        &:hover {
+            color: rgb(141, 139, 139)
+        }
+    }
+}
+
+body {
+    background: #ebe5d9;
+}

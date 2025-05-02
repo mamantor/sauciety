@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image.
-FROM node:21
+FROM node:23
 
 # Install MongoDB and Supervisor.
 # (This example uses Debian-based commands; adjust if your base image differs.)
@@ -28,6 +28,8 @@ COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 # Set the working directory for your website.
 WORKDIR /app
+
+RUN npm install -g npm@latest
 
 # Copy package files and install dependencies.
 COPY package*.json ./

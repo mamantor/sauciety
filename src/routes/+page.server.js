@@ -18,7 +18,6 @@ export async function load() {
             }
         }
     ]).toArray()
-    console.log(recipes)
     const tocOrder = ["meal", "desert"]
 
     recipes.sort((a, b) => {

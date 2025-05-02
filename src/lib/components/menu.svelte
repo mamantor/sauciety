@@ -37,7 +37,7 @@
 			display: block;
 			width: 0;
 			height: 0;
-			margin-top:38px;
+			margin-top:62px;
 			border-left: 90px solid #960018;
 			border-right: 90px solid #960018;
 			border-bottom: 50px solid transparent;

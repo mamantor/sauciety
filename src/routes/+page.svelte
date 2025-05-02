@@ -2,11 +2,9 @@
 	import styles from './page.module.scss';
 
 	let { data } = $props();
-
-	console.log(data);
 </script>
 
-<div>
+<div class={styles.pageContainer}>
 	<div class={styles.bookTitle}>{data.general.bookName}</div>
 	<div class={styles.toc__label}>Sommaire</div>
 	<div class={styles.toc__content}>

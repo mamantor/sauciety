@@ -1,3 +1,28 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+body {
+    background: #ebe5d9;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url('fonts/Roboto.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Raleway;
+    src: url('fonts/Raleway.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url('fonts/Montserrat.ttf');
+    font-weight: 400;
+    font-style: normal;
+}

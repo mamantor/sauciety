@@ -1,75 +1,63 @@
-<script>
-	import { onMount } from 'svelte';
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import styles from './page.module.scss';
 	import Cropper from 'svelte-easy-crop';
+	import { Trash } from 'svelte-heros';
 
+	// --- State variables ---
 	let title = '';
 	let legend = '';
 	let numberOfMeals = 0;
+	let category = '';
 	let ingredients = [''];
 	let instructions = [''];
-	let category = ""
+	let vegetarian = false;
+	let vegan = false;
+	let time = 0;
+	let timeUnit = 'minutes';
 	let notes = [''];
 	let croppedIllustration = '';
-	let cropArea = {
-		x: 0,
-		y: 0,
-		width: 0,
-		height: 0
-	};
+	let base64RawImage = '';
+	let isVegetarian = false;
+	let isVegan = false;
 
+	// Cropper state
+	let cropArea = { x: 0, y: 0, width: 0, height: 0 };
 	let crop = { x: 0, y: 0 };
 	let zoom = 1;
-	let base64RawImage = '';
 
+	// --- Ingredient/Instruction/Note handlers ---
 	function addIngredient() {
 		ingredients = [...ingredients, ''];
 	}
-
 	function addInstruction() {
 		instructions = [...instructions, ''];
 	}
-
 	function addNote() {
 		notes = [...notes, ''];
 	}
-
-	/**
-	 * @param {number} index
-	 */
-	function removeIngredient(index) {
+	function removeIngredient(index: number) {
 		ingredients.splice(index, 1);
 		ingredients = [...ingredients];
 	}
-
-	/**
-	 * @param {number} index
-	 */
-	function removeInstruction(index) {
+	function removeInstruction(index: number) {
 		instructions.splice(index, 1);
 		instructions = [...instructions];
 	}
-
-	/**
-	 * @param {number} index
-	 */
-	function removeNote(index) {
+	function removeNote(index: number) {
 		notes.splice(index, 1);
 		notes = [...notes];
 	}
 
-	function handleFileUpload(event) {
-		const fileInput = event.target;
+	// --- Image upload and crop ---
+	function handleFileUpload(event: Event): void {
+		const fileInput = event.target as HTMLInputElement;
 		if (!fileInput.files || fileInput.files.length === 0) return;
-
 		const file = fileInput.files[0];
 		const reader = new FileReader();
-
 		reader.onload = () => {
-			base64RawImage = reader.result;
+			base64RawImage = reader.result as string;
 		};
-
 		reader.readAsDataURL(file);
 	}
 
@@ -80,66 +68,57 @@
 			img.onload = () => {
 				const canvas = document.createElement('canvas');
 				const ctx = canvas.getContext('2d');
-
 				if (!ctx) return reject('Canvas context not available');
-
-				// Set the canvas size to match the cropped area
 				canvas.width = cropArea.width;
 				canvas.height = cropArea.height;
-
-				// Draw the cropped portion of the image onto the canvas
 				ctx.drawImage(
 					img,
 					cropArea.x,
 					cropArea.y,
 					cropArea.width,
-					cropArea.height, // Source image coordinates and size
+					cropArea.height,
 					0,
 					0,
 					cropArea.width,
-					cropArea.height // Destination on canvas
+					cropArea.height
 				);
-
-				// Convert the canvas content to a Base64 string
-				const croppedBase64 = canvas.toDataURL('image/png');
-
-				croppedIllustration = croppedBase64;
-				resolve(croppedBase64);
+				croppedIllustration = canvas.toDataURL('image/png');
+				resolve(croppedIllustration);
 			};
-
 			img.onerror = reject;
 		});
 	}
 
+	// --- Submit handler ---
 	async function submitRecipe() {
 		if (!title.trim()) {
 			alert('Title is required');
 			return;
 		}
-
 		const cleanIngredients = ingredients.filter((i) => i.trim() !== '');
 		const cleanInstructions = instructions.filter((i) => i.trim() !== '');
 		const cleanNotes = notes.filter((i) => i.trim() !== '');
-
 		if (cleanIngredients.length === 0 || cleanInstructions.length === 0) {
 			alert('At least one ingredient and one instruction are required.');
 			return;
 		}
-
 		const recipe = {
 			title,
 			ingredients: cleanIngredients,
 			instructions: cleanInstructions,
 			notes: cleanNotes,
-			category
+			category,
+			legend,
+			image: croppedIllustration,
+			numberOfMeals,
+			vegetarian: isVegetarian,
+			vegan: isVegan
 		};
-
 		const response = await fetch('/write-recipe', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(recipe)
 		});
-
 		if (response.ok) {
 			alert('Recipe added successfully!');
 			// goto('/');
@@ -150,47 +129,104 @@
 </script>
 
 <div class={styles.form_container}>
-	<h2 class={styles.title}>Ecrire une nouvelle recette</h2>
+	<h2 class={styles.title}>Nouvelle Recette</h2>
 	<div class={styles.section}>
 		<div class={styles.metadata}>
 			<div class={styles.metadata__text}>
-				<div>
-					<label class={styles.section__title}>Nom de la recette : </label>
+				<div class={styles.metadata__field}>
+					<label>Nom de la recette : </label>
 					<input type="text" bind:value={title} />
 				</div>
-				<div>
-					<label class={styles.section__title}>Legende de la recette : </label>
+				<div class={styles.metadata__field}>
+					<label>Legende de la recette : </label>
 					<textarea bind:value={legend} />
 				</div>
-				<div>
-					<label class={styles.section__title}>Pour combien de repas : </label>
 
-					<input type="number" bind:value={numberOfMeals} />
+				<div class={styles.metadata__field}>
+					<label>Categorie </label>
+					<select bind:value={category}>
+						<option value="">Choisir une catégorie</option>
+						<option value="Plat">🍽️ Plat</option>
+						<option value="Dessert">🍰 Dessert</option>
+						<option value="Apéro">🍹 Apéro</option>
+						<option value="Soupe">🥣 Soupe</option>
+						<option value="Salade">🥗 Salade</option>
+					</select>
 				</div>
-				<div>
-					<label class={styles.section__title}>Categorie </label>
-
-					<input type="number" bind:value={category} />
+				<div class={styles.metadata__field}>
+					<div class={styles.fieldGroup}>
+						<label class="whitespace-nowrap">Temps de préparation : </label>
+						<input type="text" bind:value={time} class="min-w-0" />
+						<select class="w-auto" bind:value={timeUnit}>
+							<option value="minutes">minutes</option>
+							<option value="heures">heures</option>
+							<option value="jours">jours</option>
+						</select>
+					</div>
+					<div class={styles.fieldGroup}>
+						<div>
+							<label>Pour combien de personnes : </label>
+							<input bind:value={numberOfMeals} class="max-w-10"/>
+						</div>
+						<div class={styles.veganToggles}>
+							<div class="my-4 flex items-center gap-6">
+								<div class="flex items-center">
+									<div class={styles.toggleLabel}>Végétarien</div>
+									<div class="relative inline-block h-5 w-11">
+										<input
+											checked
+											id="switch-component-1"
+											type="checkbox"
+											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
+										/>
+										<label
+											for="switch-component-1"
+											class="absolute right-12 h-0 w-0 cursor-pointer rounded-full border border-slate-300 bg-white shadow-sm transition-transform duration-300 peer-checked:translate-x-6 peer-checked:border-slate-800"
+											>🥦
+										</label>
+									</div>
+								</div>
+								<div class="flex items-center">
+									<div class={styles.toggleLabel}>Vegan</div>
+									<div class="relative inline-block h-5 w-11">
+										<input
+											checked
+											id="switch-component-2"
+											type="checkbox"
+											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
+										/>
+										<label
+											for="switch-component-2"
+											class="absolute right-12 h-0 w-0 cursor-pointer rounded-full border border-slate-300 bg-white transition-transform duration-300 peer-checked:translate-x-6 peer-checked:border-slate-800"
+											>🥦
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class={styles.metadata__image}>
-				<div class={styles.cropper__container}>
-					<Cropper
-						image={base64RawImage}
-						bind:crop
-						bind:zoom
-						aspect={1}
-						oncropcomplete={(e) => {
-							cropArea = e.pixels;
-						}}
-					/>
-				</div>
-				<button onclick={saveCroppedIllustration}>Sauvegarder cette illustration</button>
+				{#if base64RawImage}
+					<div class={styles.cropper__container}>
+						<Cropper
+							image={base64RawImage}
+							bind:crop
+							bind:zoom
+							aspect={1}
+							oncropcomplete={(e) => {
+								cropArea = e.pixels;
+							}}
+						/>
+					</div>
+					<button onclick={saveCroppedIllustration}>Sauvegarder cette illustration</button>
+				{/if}
 				<input type="file" accept="image/*" onchange={handleFileUpload} />
-
 				{#if croppedIllustration}
-					<div class={styles.illustration__preview}></div>
-					<img src={croppedIllustration} alt="Illustration Découpée" />
+					<div class={styles.illustration__preview}>
+						<img src={croppedIllustration} alt="Illustration Découpée" />
+					</div>
 				{/if}
 			</div>
 		</div>
@@ -200,8 +236,8 @@
 		<div class={styles.section__data}>
 			{#each ingredients as ingredient, index}
 				<div class={styles.input_group}>
-					<input type="text" bind:value={ingredient} />
-					<button class={styles.del_btn} onclick={() => removeIngredient(index)}>x</button>
+					<input bind:value={ingredient} />
+					<button class={styles.del_btn} onclick={() => removeIngredient(index)}><Trash class="w-5 h-5" /></button>
 				</div>
 			{/each}
 			<button class={styles.add_btn} onclick={addIngredient}>+ Ajouter un ingredient</button>
@@ -213,7 +249,7 @@
 			{#each instructions as instruction, index}
 				<div class={styles.input_group}>
 					<textarea bind:value={instruction}></textarea>
-					<button class={styles.del_btn} onclick={() => removeInstruction(index)}>x</button>
+					<button class={styles.del_btn} onclick={() => removeInstruction(index)}><Trash class="w-5 h-5" /></button>
 				</div>
 			{/each}
 			<button class={styles.add_btn} onclick={addInstruction}>+ Ajouter une étape</button>
@@ -225,14 +261,12 @@
 			{#each notes as note, index}
 				<div class={styles.input_group}>
 					<textarea bind:value={note}></textarea>
-					<button class={styles.del_btn} onclick={() => removeNote(index)}>x</button>
+					<button class={styles.del_btn} onclick={() => removeNote(index)}><Trash class="w-5 h-5" /></button>
 				</div>
 			{/each}
 			<button class={styles.add_btn} onclick={addNote}>+ Ajouter une étape</button>
 		</div>
 	</div>
-
 	<br />
-
 	<button class={styles.save_btn} onclick={submitRecipe}>Sauvegarder la recette</button>
 </div>

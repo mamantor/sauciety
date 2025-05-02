@@ -32,39 +32,89 @@
     margin-top: 2.5rem;
     display: flex;
     flex-direction: column;
-    gap : 1.5rem;
+    gap: 1.5rem;
 
     &__data {
-        display:flex;
+        display: flex;
         flex-direction: column;
-        gap : .2rem
+        gap: .2rem
     }
 
     &__title {
         font-family: Raleway, sans-serif;
-        font-size : 1.5rem;
+        font-size: 1.5rem;
         font-weight: 500
     }
 }
 
 .form_container {
+    margin-top: 3.8rem;
     max-width: 1200px;
-    margin: auto;
     padding: 20px;
     border-radius: 8px;
-    background: #fff;
 }
 
 .cropper {
     &__container {
-        position:relative;
-        width:300px;
+        position: relative;
+        width: 300px;
         height: 300px
     }
 }
 
 .metadata {
-    display:flex;
+    display: flex;
+    flex-direction: column;
+
+    input, textarea, select {
+        border: none;
+        border-radius: 5px;
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        .fieldGroup {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap
+        }
+
+        .veganToggles {
+            input {
+                vertical-align: baseline;
+
+                &:focus {
+                    border: none;
+                    box-shadow: none;
+                }
+            }
+
+            label {
+                border: none;
+                font-size: 1.5rem;
+                top: -7px
+            }
+        }
+    }
+
+    .toggleLabel {
+        margin-right: 1rem
+    }
+
+    label,
+    .toggleLabel {
+        text-wrap: nowrap;
+        font-family: Raleway, sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+    }
 }
 
 .input_group {
@@ -74,13 +124,14 @@
     margin-bottom: 10px;
 }
 
-input, textarea {
+input,
+textarea {
     font-family: Montserrat, sans-serif;
     flex: 1;
     padding: 8px;
     border: none;
     border-bottom: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 .add_btn {
@@ -89,8 +140,7 @@ input, textarea {
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    background-color: #036610e0;
-    color: white;
+    background-color: #56575663;
 }
 
 .del_btn {
@@ -99,8 +149,6 @@ input, textarea {
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    background-color: #df2707;
-    color: white;
 }
 
 .save_btn {

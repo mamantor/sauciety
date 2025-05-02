@@ -20,6 +20,9 @@ importers:
       svelte-easy-crop:
         specifier: ^4.0.0
         version: 4.0.0(svelte@5.17.1)
+      svelte-heros:
+        specifier: ^7.0.2
+        version: 7.0.2(svelte@5.17.1)
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.3
@@ -1522,6 +1525,12 @@ packages:
       svelte:
         optional: true
 
+  svelte-heros@7.0.2:
+    resolution: {integrity: sha512-JsnGvthDn2EJq+1JbRqebHnUIJTLMFtPJt7IpjdHoY2Ei24DQOdQ9QQDmFZ/7oUB6/d6Wwne4G+vnp4mvvYSDg==}
+    engines: {node: '>=18.0.0', npm: '>=7.0.0'}
+    peerDependencies:
+      svelte: ^5.0.0
+
   svelte-preprocess@6.0.3:
     resolution: {integrity: sha512-PLG2k05qHdhmRG7zR/dyo5qKvakhm8IJ+hD2eFRQmMLHp7X3eJnjeupUtvuRpbNiF31RjVw45W+abDwHEmP5OA==}
     engines: {node: '>= 18.0.0'}
@@ -2953,6 +2962,10 @@ snapshots:
       postcss: 8.4.49
       postcss-scss: 4.0.9(postcss@8.4.49)
     optionalDependencies:
+      svelte: 5.17.1
+
+  svelte-heros@7.0.2(svelte@5.17.1):
+    dependencies:
       svelte: 5.17.1
 
   svelte-preprocess@6.0.3(postcss-load-config@4.0.2(postcss@8.4.49))(postcss@8.4.49)(sass@1.83.4)(svelte@5.17.1)(typescript@5.7.3):

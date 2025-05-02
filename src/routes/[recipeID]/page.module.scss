@@ -1,26 +1,5 @@
-@font-face {
-    font-family: Roboto;
-    src: url('fonts/Roboto.ttf');
-    font-weight: 400;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: Raleway;
-    src: url('fonts/Raleway.ttf');
-    font-weight: 400;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: Montserrat;
-    src: url('fonts/Montserrat.ttf');
-    font-weight: 400;
-    font-style: normal;
-}
-
 .image_container {
-    max-width:600px;
+    max-width: 600px;
     aspect-ratio: 1 / 1;
     overflow: hidden;
     border-radius: 8px;
@@ -37,20 +16,8 @@
     }
 }
 
-ul,ol {
-    font-family: Raleway, sans-serif;
-    column-width: 200px;
-    max-height: 100%;
-    column-gap: 20px;
-    column-fill: auto;
-    margin: 0;
-    padding: 0;
-    list-style: none;
 
-    li {
-        margin: 0.5rem
-    }
-}
+
 
 .recipe {
     background: #faf3e0;
@@ -58,9 +25,17 @@ ul,ol {
 
     &__page {
         width: 85%;
-        max-width:1000px;
+        max-width: 1000px;
         margin: 0rem auto;
         padding: 1.5rem;
+
+        ul,
+        ol {
+            font-family: Raleway, sans-serif;
+            li {
+                margin: 0.5rem
+            }
+        }
     }
 
     &__top {
@@ -84,6 +59,22 @@ ul,ol {
         margin-bottom: 1rem;
         color: #6a6664;
     }
+
+    &__legend {
+        font-family: Raleway, sans-serif;
+        font-size: .9rem;
+        margin-bottom: 1rem;
+        color: #6a6664;
+        text-align: center;
+        font-style: italic;
+        width: 100%;
+
+        &:before,
+        &:after {
+            content: "~";
+            margin: 0 0.5rem;
+        }
+    }
 }
 
 .section__title {
@@ -96,21 +87,24 @@ ul,ol {
 }
 
 .instructions {
-    font-size : 1.2rem;
+    font-size: 1.2rem;
     font-family: Raleway, sans-serif;
-    list-style:latin;
-    padding-left : .5rem;
+    list-style: latin;
+    padding-left: .5rem;
 
     &__step {
-        margin-top : 0.8rem;
+        margin-top: 0.8rem;
     }
-    
+
     &__separator {
-        border-bottom: 1px rgba(0, 0, 0, 0.199) solid;
-        width: 100%
+        border-bottom: 1px rgba(0, 0, 0, 0.199) dashed;
+        width: 20%;
+        margin: auto;
+        margin-top: 30px;
+        margin-bottom: 30px
     }
 }
 
 body {
-        background: #ebe5d9;
+    background: #ebe5d9;
 }

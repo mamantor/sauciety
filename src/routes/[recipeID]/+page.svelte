@@ -6,6 +6,7 @@
 
 <div class={styles.recipe__page}>
 	<h1 class={styles.recipe__title}>{data.recipe.title}</h1>
+	<div class={styles.recipe__legend}>{data.recipe.legend}</div>
 
 	<div class={styles.recipe__top}>
 		<div class={styles.image_container}>

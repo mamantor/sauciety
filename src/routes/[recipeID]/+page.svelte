@@ -34,7 +34,3 @@
 		</ol>
 	</div>
 </div>
-
-<style>
-	
-</style>

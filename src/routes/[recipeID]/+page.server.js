@@ -1,5 +1,5 @@
 // Import the MongoDB client and ObjectId helper
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient } from 'mongodb';
 import { redirect } from '@sveltejs/kit';
 
 // You can store your connection URI and database name in environment variables for security.

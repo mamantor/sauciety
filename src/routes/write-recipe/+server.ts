@@ -42,8 +42,8 @@ export async function POST({ request }) {
     console.log(sanitizedData);
 
     await collection.insertOne(sanitizedData as SanitizedRecipe);
-    return json({ message: "Recipe added successfully" }, { status: 201 });
+    return json({ message: "Recipe added successfully", recipe: sanitizedData }, { status: 201 });
   } catch (error) {
-    return json({ error: "Internal Server Error" }, { status: 500 });
+    return json({ error }, { status: 500 });
   }
 }

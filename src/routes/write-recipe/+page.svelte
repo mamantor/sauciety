@@ -11,8 +11,6 @@
 	let category = '';
 	let ingredients = [''];
 	let instructions = [''];
-	let vegetarian = false;
-	let vegan = false;
 	let time = 0;
 	let timeUnit = 'minutes';
 	let notes = [''];
@@ -120,8 +118,14 @@
 			body: JSON.stringify(recipe)
 		});
 		if (response.ok) {
-			alert('Recipe added successfully!');
-			// goto('/');
+			const result = await response.json();
+			
+			if (result.recipe.slug) {
+				goto(`/` + result.recipe.slug);
+			} else {
+				alert('Recipe added successfully!');
+			}
+			return;
 		} else {
 			alert('Error adding recipe.');
 		}
@@ -134,17 +138,17 @@
 		<div class={styles.metadata}>
 			<div class={styles.metadata__text}>
 				<div class={styles.metadata__field}>
-					<label>Nom de la recette : </label>
-					<input type="text" bind:value={title} />
+					<label for="recipe-name">Nom de la recette : </label>
+					<input id="recipe-name" type="text" bind:value={title} />
 				</div>
 				<div class={styles.metadata__field}>
-					<label>Legende de la recette : </label>
-					<textarea bind:value={legend} />
+					<label for="recipe-legend">Legende de la recette : </label>
+					<textarea id="recipe-legend" bind:value={legend}></textarea>
 				</div>
 
 				<div class={styles.metadata__field}>
-					<label>Categorie </label>
-					<select bind:value={category}>
+					<label for="recipe-category">Categorie </label>
+					<select id="recipe-category" bind:value={category}>
 						<option value="">Choisir une catégorie</option>
 						<option value="Plat">🍽️ Plat</option>
 						<option value="Dessert">🍰 Dessert</option>
@@ -155,8 +159,8 @@
 				</div>
 				<div class={styles.metadata__field}>
 					<div class={styles.fieldGroup}>
-						<label class="whitespace-nowrap">Temps de préparation : </label>
-						<input type="text" bind:value={time} class="min-w-0" />
+						<label for="prep-time" class="whitespace-nowrap">Temps de préparation : </label>
+						<input id="prep-time" type="text" bind:value={time} class="min-w-0" />
 						<select class="w-auto" bind:value={timeUnit}>
 							<option value="minutes">minutes</option>
 							<option value="heures">heures</option>
@@ -165,8 +169,8 @@
 					</div>
 					<div class={styles.fieldGroup}>
 						<div>
-							<label>Pour combien de personnes : </label>
-							<input bind:value={numberOfMeals} class="max-w-10"/>
+							<label for="number-of-meals">Pour combien de personnes : </label>
+							<input id="number-of-meals" bind:value={numberOfMeals} class="max-w-10" />
 						</div>
 						<div class={styles.veganToggles}>
 							<div class="my-4 flex items-center gap-6">
@@ -174,7 +178,7 @@
 									<div class={styles.toggleLabel}>Végétarien</div>
 									<div class="relative inline-block h-5 w-11">
 										<input
-											checked
+											bind:checked={isVegetarian}
 											id="switch-component-1"
 											type="checkbox"
 											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
@@ -190,14 +194,14 @@
 									<div class={styles.toggleLabel}>Vegan</div>
 									<div class="relative inline-block h-5 w-11">
 										<input
-											checked
+											bind:checked={isVegan}
 											id="switch-component-2"
 											type="checkbox"
-											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
+											class="peer h-5 w-11 cursor-pointer appearance-none  bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
 										/>
 										<label
 											for="switch-component-2"
-											class="absolute right-12 h-0 w-0 cursor-pointer rounded-full border border-slate-300 bg-white transition-transform duration-300 peer-checked:translate-x-6 peer-checked:border-slate-800"
+											class="absolute right-12 h-0 w-0 cursor-pointer bg-white transition-transform duration-300 peer-checked:translate-x-6 peer-checked:border-slate-800"
 											>🥦
 										</label>
 									</div>
@@ -237,7 +241,9 @@
 			{#each ingredients as ingredient, index}
 				<div class={styles.input_group}>
 					<input bind:value={ingredient} />
-					<button class={styles.del_btn} onclick={() => removeIngredient(index)}><Trash class="w-5 h-5" /></button>
+					<button class={styles.del_btn} onclick={() => removeIngredient(index)}
+						><Trash class="h-5 w-5" /></button
+					>
 				</div>
 			{/each}
 			<button class={styles.add_btn} onclick={addIngredient}>+ Ajouter un ingredient</button>
@@ -249,7 +255,9 @@
 			{#each instructions as instruction, index}
 				<div class={styles.input_group}>
 					<textarea bind:value={instruction}></textarea>
-					<button class={styles.del_btn} onclick={() => removeInstruction(index)}><Trash class="w-5 h-5" /></button>
+					<button class={styles.del_btn} onclick={() => removeInstruction(index)}
+						><Trash class="h-5 w-5" /></button
+					>
 				</div>
 			{/each}
 			<button class={styles.add_btn} onclick={addInstruction}>+ Ajouter une étape</button>
@@ -261,7 +269,9 @@
 			{#each notes as note, index}
 				<div class={styles.input_group}>
 					<textarea bind:value={note}></textarea>
-					<button class={styles.del_btn} onclick={() => removeNote(index)}><Trash class="w-5 h-5" /></button>
+					<button class={styles.del_btn} onclick={() => removeNote(index)}
+						><Trash class="h-5 w-5" /></button
+					>
 				</div>
 			{/each}
 			<button class={styles.add_btn} onclick={addNote}>+ Ajouter une étape</button>

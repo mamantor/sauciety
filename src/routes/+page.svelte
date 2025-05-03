@@ -11,9 +11,19 @@
 		{#each data.recipes as category}
 			<div class={styles.category}>
 				<div class={styles.category__label}>
-						<img width="20px" style="margin-right:0.5rem" src={`/icons/${category._id}.svg`} />
+					<img
+						width="20px"
+						style="margin-right:0.5rem"
+						src={`/icons/${category._id}.svg`}
+						alt={category._id}
+					/>
 					{category._id}
-						<img width="20px" style="margin-left:0.5rem" src={`/icons/${category._id}.svg`} />
+					<img
+						width="20px"
+						style="margin-left:0.5rem"
+						src={`/icons/${category._id}.svg`}
+						alt={category._id}
+					/>
 				</div>
 				{#each category.items as recipe}
 					<div class={styles.recipe__title}>

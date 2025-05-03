@@ -1,0 +1,7 @@
+pour build : docker build -t sauciety .
+
+ou pour mac : docker build --platform=linux/arm64 -t your-image-name .
+
+pour lancer : docker run -p 5173:5173 -p 27017:27017 -v "$(pwd):/app" -v mongo-data:/data/db sauciety
+
+pour linter : pnpm exec eslint . --fix

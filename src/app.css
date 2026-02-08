@@ -1,28 +1,96 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
-    background: #ebe5d9;
+    background: hsl(40 33% 96%);
 }
 
 @font-face {
     font-family: Roboto;
-    src: url('fonts/Roboto.ttf');
+    src: url('/fonts/Roboto.ttf');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: Raleway;
-    src: url('fonts/Raleway.ttf');
+    src: url('/fonts/Raleway.ttf');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: Montserrat;
-    src: url('fonts/Montserrat.ttf');
+    src: url('/fonts/Montserrat.ttf');
     font-weight: 400;
     font-style: normal;
+}
+
+
+@layer base {
+    :root {
+        --background: 40 33% 96%;
+        --foreground: 25 30% 15%;
+
+        --card: 40 40% 98%;
+        --card-foreground: 25 30% 15%;
+
+        --popover: 40 40% 98%;
+        --popover-foreground: 25 30% 15%;
+
+        --primary: 15 60% 50%;
+        --primary-foreground: 40 40% 98%;
+
+        --secondary: 40 25% 90%;
+        --secondary-foreground: 25 30% 20%;
+
+        --muted: 40 20% 92%;
+        --muted-foreground: 25 15% 45%;
+
+        --accent: 145 25% 45%;
+        --accent-foreground: 40 40% 98%;
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 35 20% 85%;
+        --input: 35 20% 85%;
+        --ring: 15 60% 50%;
+
+        --radius: 0.75rem;
+
+        /* Custom tokens */
+        --cream: 40 33% 96%;
+        --cream-light: 40 40% 98%;
+        --cream-dark: 40 25% 88%;
+        --terracotta: 15 60% 50%;
+        --terracotta-dark: 15 55% 40%;
+        --sage: 145 25% 45%;
+        --charcoal: 25 30% 15%;
+        --warm-brown: 25 35% 30%;
+
+        --font-serif: 'Playfair Display', Georgia, serif;
+        --font-sans: 'Inter', system-ui, sans-serif;
+
+        --shadow-soft: 0 4px 20px -4px hsl(25 30% 15% / 0.08);
+        --shadow-card: 0 2px 12px -2px hsl(25 30% 15% / 0.06);
+        --shadow-elevated: 0 8px 30px -6px hsl(25 30% 15% / 0.12);
+    }
+}
+
+.shadow-card {
+    box-shadow: var(--shadow-card);
+}
+
+@layer components {
+    .input-base {
+        @apply w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+    }
+
+    .button-base {
+        @apply inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90
+    }
 }

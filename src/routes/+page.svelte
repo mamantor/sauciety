@@ -1,41 +1,44 @@
 <script>
+	import MenuSection from '$lib/components/MenuSection.svelte';
+	import SearchBar from '$lib/components/SearchBar.svelte';
 	import styles from './page.module.scss';
+	import { UtensilsCrossed } from '@lucide/svelte';
 
 	let { data } = $props();
+	let search = $state('');
+
+	let filtered = $derived.by(() => {
+		const q = search.trim().toLowerCase();
+		if (!q) return data.recipes;
+
+		return data.recipes
+			.map((category) => {
+				const items = category.items.filter((recipe) => recipe.title.toLowerCase().includes(q));
+				return { ...category, items };
+			})
+			.filter((category) => category.items.length > 0);
+	});
+
 </script>
 
-<div class={styles.pageContainer}>
-	<div class={styles.bookTitle}>{data.general.bookName}</div>
-	<div class={styles.toc__label}>Sommaire</div>
-	<div class={styles.toc__content}>
-		{#each data.recipes as category}
-			<div class={styles.category}>
-				<div class={styles.category__label}>
-					<img
-						width="20px"
-						style="margin-right:0.5rem"
-						src={`/icons/${category._id}.svg`}
-						alt={category._id}
-					/>
-					{category._id}
-					<img
-						width="20px"
-						style="margin-left:0.5rem"
-						src={`/icons/${category._id}.svg`}
-						alt={category._id}
-					/>
+<main class="container py-6 pb-20">
+	<div class="mb-8">
+		<SearchBar bind:value={search} />
+		{search}
+	</div>
+	<div class="mx-auto max-w-2xl rounded-lg bg-card p-6 shadow-card md:p-8">
+		<div class="mb-8 text-center">
+			<div class="inline-block">
+				<div class="mb-2 flex items-center justify-between">
+					<div class="h-px w-12 bg-primary/50" />
+					<UtensilsCrossed class="h-5 w-5 text-primary" />
+					<div class="h-px w-12 bg-primary/50" />
 				</div>
-				{#each category.items as recipe}
-					<div class={styles.recipe__title}>
-						<a href={recipe.slug}>
-							<span>{recipe.title}</span>
-							<span class={styles.dotted_line}></span>
-							<span>{recipe.time}</span>
-							{#if recipe.vegetarian}<span>V</span>{/if}
-						</a>
-					</div>
-				{/each}
+				<h1 class="font-serif text-2xl text-foreground md:text-3xl">Our Recipes</h1>
 			</div>
+		</div>
+		{#each filtered as category (category._id)}
+			<MenuSection category={category} />
 		{/each}
 	</div>
-</div>
+</main>

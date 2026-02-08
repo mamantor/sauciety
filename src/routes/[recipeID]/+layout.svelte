@@ -7,6 +7,8 @@
 	import Frieze1Part4 from '$lib/friezes/Frieze1Part4.svelte';
 	import Frieze1Part5 from '$lib/friezes/Frieze1Part5.svelte';
 	import Frieze1Part6 from '$lib/friezes/Frieze1Part6.svelte';
+	import styles from './page.module.scss';
+
 
 	const friezes: Array<Component> = [
 		Frieze1Part1,
@@ -25,15 +27,15 @@
 </script>
 
 <div>
-	<div class="svg-container">
+	<!-- <div class={styles.frieza}>
 		{#if SelectedFrieze}
 			<svelte:component this={SelectedFrieze} />
 		{/if}
-	</div>
+	</div> -->
 	<slot />
-	<div class="svg-container">
+	<!-- <div class={styles.frieza}>
 		{#if SelectedFrieze}
 			<svelte:component this={SelectedFrieze} />
 		{/if}
-	</div>
+	</div> -->
 </div>

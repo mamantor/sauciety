@@ -1,3 +1,5 @@
+@tailwind base;
+
 .title {
     font-family: Raleway, sans-serif;
     margin: auto;
@@ -41,61 +43,31 @@
     }
 }
 
-.metadata {
-    display: flex;
-    flex-direction: column;
 
-    input, textarea, select {
+
+.veganToggles {
+    input {
+        vertical-align: baseline;
+        background-position: -9px;
+
+        &:focus {
+            border: none;
+            box-shadow: none;
+        }
+    }
+
+    label {
         border: none;
-        border-radius: 5px;
-    }
-
-    &__field {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
-
-        .fieldGroup {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap
-        }
-
-        .veganToggles {
-            input {
-                vertical-align: baseline;
-                background-position:-9px;
-
-                &:focus {
-                    border: none;
-                    box-shadow: none;
-                }
-            }
-
-            label {
-                border: none;
-                font-size: 1.5rem;
-                top: -7px;
-            }
-        }
-    }
-
-    .toggleLabel {
-        margin-right: 1rem
-    }
-
-    label,
-    .toggleLabel {
-        text-wrap: nowrap;
-        font-family: Raleway, sans-serif;
-        font-size: 1rem;
-        font-weight: 500;
+        font-size: 1.5rem;
+        top: -7px;
     }
 }
+
+.toggleLabel {
+    margin-right: 1rem;
+    font-size : 0.8rem
+}
+
 
 .input_group {
     display: flex;
@@ -104,41 +76,10 @@
     margin-bottom: 10px;
 }
 
-input,
-textarea {
-    font-family: Montserrat, sans-serif;
-    flex: 1;
-    padding: 8px;
-    border: none;
-    border-bottom: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.add_btn {
-    font-family: Montserrat, sans-serif;
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    background-color: #56575663;
-}
-
 .del_btn {
     font-family: Montserrat, sans-serif;
     padding: 8px 12px;
     border: none;
     cursor: pointer;
     border-radius: 4px;
-}
-
-.save_btn {
-    font-family: Montserrat, sans-serif;
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    background-color: #0789df;
-    color: white;
-    margin: auto;
-    display: block
 }

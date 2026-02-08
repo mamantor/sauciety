@@ -8,15 +8,17 @@
 <div class="bookmark-menu">
 	<ul class="menu">
 		{#each menuItems as item}
-			<li><a href={item.href}>{item.text}</a></li>
+			<li><a class="text-foreground" href={item.href}>{item.text}</a></li>
 		{/each}
 	</ul>
 </div>
 
 <style lang="scss">
+	@tailwind base;
+
 	.bookmark-menu {
 		width: 100%;
-		background-color: #960018;
+		background-color: #cc5933;
 		overflow: visible;
 		z-index: 1000;
 		position: fixed;
@@ -38,8 +40,8 @@
 			width: 0;
 			height: 0;
 			margin-top:62px;
-			border-left: 90px solid #960018;
-			border-right: 90px solid #960018;
+			border-left: 90px solid #cc5933;
+			border-right: 91px solid #cc5933;
 			border-bottom: 50px solid transparent;
 			transition:
 				border-left 0.3s ease,

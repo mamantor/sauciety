@@ -3,10 +3,10 @@
     aspect-ratio: 1 / 1;
     overflow: hidden;
     border-radius: 8px;
+    margin : auto
 }
 
 .ingredients {
-    width: 700px;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -16,14 +16,13 @@
     }
 }
 
-
-
-
 .recipe {
-    background: #faf3e0;
     color: #333;
 
     &__page {
+        background-color: white;
+        border-radius : 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         width: 85%;
         max-width: 1000px;
         margin: 0rem auto;
@@ -89,7 +88,6 @@
 .instructions {
     font-size: 1.2rem;
     font-family: Raleway, sans-serif;
-    list-style: latin;
     padding-left: .5rem;
 
     &__step {
@@ -107,4 +105,8 @@
 
 body {
     background: #ebe5d9;
+}
+
+.frieza {
+    opacity : 50%
 }

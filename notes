@@ -2,6 +2,12 @@ pour build : docker build -t sauciety .
 
 ou pour mac : docker build --platform=linux/arm64 -t your-image-name .
 
-pour lancer : docker run -p 5173:5173 -p 27017:27017 -v "$(pwd):/app" -v mongo-data:/data/db sauciety
+pour lancer : docker compose -f docker-compose.dev.yml up ou docker compose -f docker-compose.dev.yml up -d --force-recreate
+
+pour build l'image docker : docker compose up -d --build
+Des fois, il est chiant parce qu'il veut supprimer pnpm veut supprimer les node modules, il suffit de les supprimer a la main ou de mettre l'option CI:true dans le 
+docker-compose
 
 pour linter : pnpm exec eslint . --fix
+
+pour avoir les logs : docker compose -f docker-compose.dev.yml logs -f app   

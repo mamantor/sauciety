@@ -1,0 +1,28 @@
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    networks: [appnet]
+
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
+      PORT: 3000
+    depends_on: [mongo]
+    ports:
+      - "3000:3000"
+    networks: [appnet]
+
+volumes:
+  mongo_data:
+
+networks:
+  appnet:

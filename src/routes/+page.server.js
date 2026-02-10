@@ -2,7 +2,7 @@ import { getMongoDatabase } from "$lib/mongo/client"
 
 export async function load() {
 
-    const db = getMongoDatabase()
+    const db = await getMongoDatabase('sauciety')
 
     const collection = db.collection("recipes");
     const generalCollection = db.collection('general');

@@ -1,45 +1,28 @@
-# Use the official Node.js image as the base image.
-FROM node:23
-
-# Install MongoDB and Supervisor.
-# (This example uses Debian-based commands; adjust if your base image differs.)
-RUN apt-get update && \
-    apt-get install -y supervisor && \
-    rm -rf /var/lib/apt/lists/*
-
-
-# -----------------------------
-# Install MongoDB following the official Ubuntu instructions
-# -----------------------------
-
-# Import the MongoDB public GPG key.
-RUN curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
-    gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
-    --dearmor
-
-# Create the MongoDB list file for Ubuntu 20.04 (Focal).
-RUN echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-
-# Update the package index and install MongoDB.
-RUN apt-get update && apt-get install -y mongodb-org
-
-# Copy the Supervisor configuration file into the container.
-COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-
-# Set the working directory for your website.
+# Build stage
+FROM node:22-alpine AS build
 WORKDIR /app
 
-RUN npm install -g npm@latest
+# Enable pnpm via corepack
+RUN corepack enable
 
-# Copy package files and install dependencies.
-COPY package*.json ./
-RUN npm install
+# Copy lockfile + manifest first for better caching
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
-# Copy the rest of your application code.
-# COPY . .
+# Copy the rest and build
+COPY . .
+RUN pnpm build
 
-# Expose the port on which your website will run (adjust if needed).
-EXPOSE 5173
+# Runtime stage
+FROM node:22-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+RUN corepack enable
 
-# Start Supervisor in non-daemon mode to run both MongoDB and your website.
-CMD ["/usr/bin/supervisord", "-n"]
+# Copy build output + minimal deps
+COPY --from=build /app/build ./build
+COPY --from=build /app/package.json /app/pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
+EXPOSE 3000
+CMD ["node", "build"]

@@ -11,7 +11,7 @@ export type SanitizedRecipe = {
   slug: string;
 };
 
-const db = getMongoDatabase()
+const db = await getMongoDatabase('sauciety')
 
 const collection = db.collection("recipes");
 

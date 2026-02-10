@@ -1,12 +1,17 @@
-import { MongoClient, Db } from "mongodb";
+import { MongoClient } from 'mongodb';
+import { env } from '$env/dynamic/private';
 
-const MONGODB_URI = 'mongodb://localhost:27017';
-const DB_NAME = 'sauciety';
+const MONGODB_URI = env.MONGODB_URI;
 
-const client = new MongoClient(MONGODB_URI);
-await client.connect();
-const db = client.db(DB_NAME);
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
 
-export function getMongoDatabase(): Db {
-    return db
+if (!clientPromise) {
+  client = new MongoClient(MONGODB_URI);
+  clientPromise = client.connect();
+}
+
+export async function getMongoDatabase(dbName?: string) {
+  const c = await clientPromise;
+  return c.db(dbName);
 }

@@ -1,0 +1,28 @@
+services:
+  mongo:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  app:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "corepack enable && pnpm install && pnpm dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    environment:
+      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
+    volumes:
+      - .:/app
+      - pnpm_store:/pnpm-store
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
+  pnpm_store:

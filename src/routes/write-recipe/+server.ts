@@ -18,6 +18,7 @@ export type SanitizedRecipe = {
   vegetarian?: boolean;
   vegan?: boolean;
   notes?: string;
+  category?: string;
 };
 
 const db = await getMongoDatabase('sauciety')
@@ -32,7 +33,7 @@ export async function POST({ request }) {
     }
 
     // Whitelist of allowed fields
-    const allowedFields = ["title", "ingredients", "instructions", "legend", "image", "tags", "author", "servings", "cooktime", "timeUnit", "vegetarian", "vegan", "notes"] as const;
+    const allowedFields = ["category", "title", "ingredients", "instructions", "legend", "image", "tags", "author", "servings", "cooktime", "timeUnit", "vegetarian", "vegan", "notes"] as const;
     const sanitizedData: Partial<SanitizedRecipe> = {};
     for (const field of allowedFields) {
       if (data[field] !== undefined) {

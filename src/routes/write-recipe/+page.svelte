@@ -1,24 +1,57 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Image } from '@lucide/svelte';
+	import { Image as ImageIcon } from '@lucide/svelte';
 	import styles from './page.module.scss';
 	import Cropper from 'svelte-easy-crop';
 	import { Trash } from 'svelte-heros';
 
-	// --- State variables ---
-	let title = '';
-	let legend = '';
-	let numberOfMeals = 0;
-	let category = '';
-	let ingredients = [''];
-	let instructions = [''];
-	let time = 0;
-	let timeUnit = 'minutes';
-	let notes = [''];
-	let croppedIllustration = '';
-	let base64RawImage = '';
-	let isVegetarian = false;
-	let isVegan = false;
+	export let data;
+	const { editRecipe } = data;
+
+	type formType = {
+		author: string;
+		category: string;
+		cooktime: number;
+		image: string;
+		ingredients: string[];
+		instructions: string[];
+		isVegan: boolean;
+		isVegetarian: boolean;
+		legend: string;
+		notes: string[];
+		servings: number;
+		timeUnit: string;
+		title: string;
+	}
+
+	let defaultValues = {
+		category: '',
+		cooktime: 0,
+		image: '',
+		ingredients: [''],
+		instructions: [''],
+		isVegan: false,
+		isVegetarian: false,
+		legend: '',
+		notes: [''],
+		servings: 0,
+		timeUnit: 'minutes',
+		title: '',
+		author: ''
+	};
+
+	let base64RawImage: string = '';
+
+	const withDefaults = (r: any) => ({
+		...defaultValues,
+		...(r ?? {}),
+		// ensure array fields are never empty / undefined
+		ingredients: r?.ingredients?.length ? r.ingredients : [''],
+		instructions: r?.instructions?.length ? r.instructions : [''],
+		notes: r?.notes?.length ? r.notes : ['']
+	});
+
+	let form: formType = withDefaults(editRecipe);
 
 	// Cropper state
 	let cropArea = { x: 0, y: 0, width: 0, height: 0 };
@@ -27,25 +60,25 @@
 
 	// --- Ingredient/Instruction/Note handlers ---
 	function addIngredient() {
-		ingredients = [...ingredients, ''];
+		form.ingredients = [...form.ingredients, ''];
 	}
 	function addInstruction() {
-		instructions = [...instructions, ''];
+		form.instructions = [...form.instructions, ''];
 	}
 	function addNote() {
-		notes = [...notes, ''];
+		form.notes = [...form.notes, ''];
 	}
 	function removeIngredient(index: number) {
-		ingredients.splice(index, 1);
-		ingredients = [...ingredients];
+		form.ingredients.splice(index, 1);
+		form.ingredients = [...form.ingredients];
 	}
 	function removeInstruction(index: number) {
-		instructions.splice(index, 1);
-		instructions = [...instructions];
+		form.instructions.splice(index, 1);
+		form.instructions = [...form.instructions];
 	}
 	function removeNote(index: number) {
-		notes.splice(index, 1);
-		notes = [...notes];
+		form.notes.splice(index, 1);
+		form.notes = [...form.notes];
 	}
 
 	// --- Image upload and crop ---
@@ -60,7 +93,7 @@
 		reader.readAsDataURL(file);
 	}
 
-	async function saveCroppedIllustration() {
+	async function saveimage() {
 		return new Promise((resolve, reject) => {
 			const img = new Image();
 			img.src = base64RawImage;
@@ -81,8 +114,8 @@
 					cropArea.width,
 					cropArea.height
 				);
-				croppedIllustration = canvas.toDataURL('image/png');
-				resolve(croppedIllustration);
+				form.image = canvas.toDataURL('image/png');
+				resolve(form.image);
 			};
 			img.onerror = reject;
 		});
@@ -90,28 +123,32 @@
 
 	// --- Submit handler ---
 	async function submitRecipe() {
-		if (!title.trim()) {
+		if (!form.title.trim()) {
 			alert('Title is required');
 			return;
 		}
-		const cleanIngredients = ingredients.filter((i) => i.trim() !== '');
-		const cleanInstructions = instructions.filter((i) => i.trim() !== '');
-		const cleanNotes = notes.filter((i) => i.trim() !== '');
+		const cleanIngredients = form.ingredients.filter((i) => i.trim() !== '');
+		const cleanInstructions = form.instructions.filter((i) => i.trim() !== '');
+		const cleanNotes = form.notes.filter((i) => i.trim() !== '');
 		if (cleanIngredients.length === 0 || cleanInstructions.length === 0) {
 			alert('At least one ingredient and one instruction are required.');
 			return;
 		}
 		const recipe = {
-			title,
+			author: form.author,
+			category: form.category,
+			image: form.image,
 			ingredients: cleanIngredients,
 			instructions: cleanInstructions,
+			legend: form.legend,
 			notes: cleanNotes,
-			category,
-			legend,
-			image: croppedIllustration,
-			numberOfMeals,
-			vegetarian: isVegetarian,
-			vegan: isVegan
+			servings: form.servings,
+			title: form.title,
+			vegan: form.isVegan,
+			vegetarian: form.isVegetarian,
+			editId: editRecipe?._id,
+			cooktime: form.cooktime,
+			timeUnit: form.timeUnit
 		};
 		const response = await fetch('/write-recipe', {
 			method: 'POST',
@@ -133,37 +170,43 @@
 	}
 </script>
 
-<div class="shadow-soft container mt-12 rounded-xl bg-card py-6">
+<div class="shadow-soft container mt-12 rounded-xl bg-card p-12">
 	<h2 class="flex justify-center font-serif text-2xl">Nouvelle Recette</h2>
 	<div>
 		<div class={styles.metadata}>
 			<div class="flex flex-col gap-6">
 				<div>
 					<label class="mb-2 block" for="recipe-name">Nom de la recette : </label>
-					<input class="input-base" id="recipe-name" type="text" bind:value={title} />
+					<input class="input-base" id="recipe-name" type="text" bind:value={form.title} />
 				</div>
 				<div>
 					<label class="mb-2 block" for="recipe-legend">Legende de la recette : </label>
-					<textarea class="input-base" id="recipe-legend" bind:value={legend}></textarea>
+					<textarea class="input-base" id="recipe-legend" bind:value={form.legend}></textarea>
 				</div>
-
-				<div>
-					<label class="mb-2 block" for="recipe-category">Categorie </label>
-					<select id="recipe-category" class="input-base" bind:value={category}>
-						<option value="">Choisir une catégorie</option>
-						<option value="Plat">🍽️ Plat</option>
-						<option value="Dessert">🍰 Dessert</option>
-						<option value="Apéro">🍹 Apéro</option>
-						<option value="Soupe">🥣 Soupe</option>
-						<option value="Salade">🥗 Salade</option>
-					</select>
+				<div class="grid grid-cols-2 gap-8">
+					<div>
+						<label class="mb-2 block" for="recipe-category">Categorie </label>
+						<select id="recipe-category" class="input-base" bind:value={form.category}>
+							<option value="">Choisir une catégorie</option>
+							<option value="Plat">🍽️ Plat</option>
+							<option value="Dessert">🍰 Dessert</option>
+							<option value="Apéro">🍷 Apéro</option>
+							<option value="Soupe">🥣 Soupe</option>
+							<option value="Salade">🥗 Salade</option>
+							<option value="Cocktail">🍹 Cocktail</option>
+						</select>
+					</div>
+					<div>
+						<label class="mb-2 block" for="recipe-author">Auteur : </label>
+						<input class="input-base" id="recipe-author" type="text" bind:value={form.author} />
+					</div>
 				</div>
 				<div class="grid grid-cols-3 gap-8">
 					<div class="items-center gap-4">
 						<label class="mb-2 block" for="prep-time">Temps de préparation : </label>
 						<div class="flex gap-4">
-							<input id="prep-time" type="text" bind:value={time} class="input-base" />
-							<select class="input-base" bind:value={timeUnit}>
+							<input id="prep-time" type="text" bind:value={form.cooktime} class="input-base" />
+							<select class="input-base" bind:value={form.timeUnit}>
 								<option value="minutes">minutes</option>
 								<option value="heures">heures</option>
 								<option value="jours">jours</option>
@@ -173,7 +216,7 @@
 					<div>
 						<div>
 							<label class="mb-2 block" for="number-of-meals">Pour combien de personnes : </label>
-							<input id="number-of-meals" bind:value={numberOfMeals} class="input-base" />
+							<input id="number-of-meals" bind:value={form.servings} class="input-base" />
 						</div>
 					</div>
 					<div>
@@ -183,7 +226,7 @@
 									<div class={styles.toggleLabel}>Végétarien</div>
 									<div class="relative inline-block h-5 w-11">
 										<input
-											bind:checked={isVegetarian}
+											bind:checked={form.isVegetarian}
 											id="switch-component-1"
 											type="checkbox"
 											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
@@ -200,10 +243,10 @@
 									<div class={styles.toggleLabel}>Vegan</div>
 									<div class="relative inline-block h-5 w-11">
 										<input
-											bind:checked={isVegan}
+											bind:checked={form.isVegan}
 											id="switch-component-2"
 											type="checkbox"
-											class="peer h-5 w-11 cursor-pointer appearance-none bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
+											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
 										/>
 										<label
 											for="switch-component-2"
@@ -237,7 +280,7 @@
 						<div class="flex flex-col justify-center gap-8">
 							<button
 								class="h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-								onclick={saveCroppedIllustration}>Selectionner la zone</button
+								onclick={saveimage}>Selectionner la zone</button
 							>
 							<label
 								for="file-upload"
@@ -252,8 +295,12 @@
 						for="file-upload"
 						class="inline-flex cursor-pointer items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
 					>
-					<Image class="mr-2 h-4 w-4" />
-						Ajouter une illustration
+						<ImageIcon class="mr-2 h-4 w-4" />
+						{#if form.image}
+							Changer d'illustration
+						{:else}
+							Ajouter une illustration
+						{/if}
 					</label>
 				{/if}
 
@@ -264,9 +311,9 @@
 					accept="image/*"
 					onchange={handleFileUpload}
 				/>
-				{#if croppedIllustration}
+				{#if form.image}
 					<div class="mt-4 overflow-hidden rounded-lg">
-						<img src={croppedIllustration} alt="Illustration Découpée" />
+						<img src={form.image} alt="Illustration Découpée" />
 					</div>
 				{/if}
 			</div>
@@ -275,7 +322,7 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Ingredients</h3>
 		<div class={styles.section__data}>
-			{#each ingredients as ingredient, index}
+			{#each form.ingredients as ingredient, index}
 				<div class={styles.input_group}>
 					<input bind:value={ingredient} class="input-base" />
 					<button class={styles.del_btn} onclick={() => removeIngredient(index)}>
@@ -289,7 +336,7 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Instructions</h3>
 		<div class={styles.section__data}>
-			{#each instructions as instruction, index}
+			{#each form.instructions as instruction, index}
 				<div class={styles.input_group}>
 					<textarea bind:value={instruction} class="input-base"></textarea>
 					<button class={styles.del_btn} onclick={() => removeInstruction(index)}>
@@ -303,7 +350,7 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Notes</h3>
 		<div class={styles.section__data}>
-			{#each notes as note, index}
+			{#each form.notes as note, index}
 				<div class={styles.input_group}>
 					<textarea bind:value={note} class="input-base"> </textarea>
 					<button class={styles.del_btn} onclick={() => removeNote(index)}>

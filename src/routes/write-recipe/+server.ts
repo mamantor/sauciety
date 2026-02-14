@@ -1,5 +1,6 @@
 import { json } from "@sveltejs/kit";
 import { getMongoDatabase } from "$lib/mongo/client";
+import { ObjectId } from "mongodb";
 
 export type SanitizedRecipe = {
   title: string;
@@ -9,6 +10,14 @@ export type SanitizedRecipe = {
   image?: string;
   tags?: string[];
   slug: string;
+  legend?: string;
+  author?: string;
+  servings?: number;
+  cooktime?: number;
+  timeUnit?: string;
+  vegetarian?: boolean;
+  vegan?: boolean;
+  notes?: string;
 };
 
 const db = await getMongoDatabase('sauciety')
@@ -23,7 +32,7 @@ export async function POST({ request }) {
     }
 
     // Whitelist of allowed fields
-    const allowedFields = ["title", "ingredients", "instructions", "legend", "image", "tags"];
+    const allowedFields = ["title", "ingredients", "instructions", "legend", "image", "tags", "author", "servings", "cooktime", "timeUnit", "vegetarian", "vegan", "notes"] as const;
     const sanitizedData: Partial<SanitizedRecipe> = {};
     for (const field of allowedFields) {
       if (data[field] !== undefined) {
@@ -39,9 +48,13 @@ export async function POST({ request }) {
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-");
 
-    console.log(sanitizedData);
+    if (data.editId) {
+      await collection.updateOne({ _id: new ObjectId(data.editId) }, { $set: sanitizedData });
+      return json({ message: "Recipe updated successfully", recipe: sanitizedData }, { status: 200 });
+    } else {
 
-    await collection.insertOne(sanitizedData as SanitizedRecipe);
+      await collection.insertOne(sanitizedData as SanitizedRecipe);
+    }
     return json({ message: "Recipe added successfully", recipe: sanitizedData }, { status: 201 });
   } catch (error) {
     return json({ error }, { status: 500 });

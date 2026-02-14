@@ -9,7 +9,6 @@
 	import Frieze1Part6 from '$lib/friezes/Frieze1Part6.svelte';
 	import styles from './page.module.scss';
 
-
 	const friezes: Array<Component> = [
 		Frieze1Part1,
 		Frieze1Part2,

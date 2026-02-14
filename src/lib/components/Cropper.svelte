@@ -34,7 +34,6 @@
     let rafZoomTimeout = $state<number | null>(null)
   
     onMount(() => {
-      console.log('non')
       // when rendered via SSR, the image can already be loaded and its onLoad callback will never be called
       if (imgEl && imgEl.complete) {
         onImgLoad()
@@ -103,7 +102,6 @@
     })
   
     const onMouseDown = (e: MouseEvent) => {
-      console.log('add event')
       e.preventDefault()
       document.addEventListener('mousemove', onMouseMove)
       document.addEventListener('mouseup', onDragStopped)
@@ -236,8 +234,6 @@
         restrictPosition
       )
 
-      console.log(!!oncropcomplete)
-  
       oncropcomplete?.({
         percent: croppedAreaPercentages,
         pixels: croppedAreaPixels,
@@ -260,7 +256,6 @@
     })
   
     const containerAction: Action<HTMLDivElement> = node => {
-      console.log('oui')
       $effect(() => {
         node.addEventListener('touchstart', onTouchStart)
         node.addEventListener('mousedown', onMouseDown)

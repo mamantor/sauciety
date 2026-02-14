@@ -34,7 +34,7 @@
 					<UtensilsCrossed class="h-5 w-5 text-primary" />
 					<div class="h-px w-12 bg-primary/50" />
 				</div>
-				<h1 class="font-serif text-2xl text-foreground md:text-3xl">Our Recipes</h1>
+				<h1 class="font-serif text-2xl text-foreground md:text-3xl">Au Menu</h1>
 			</div>
 		</div>
 		{#each filtered as category (category._id)}

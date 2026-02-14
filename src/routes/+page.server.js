@@ -11,7 +11,7 @@ export async function load() {
             $group: {
                 _id: "$category", // Grouping by category
                 items: {
-                    $push: { title: "$title", slug: "$slug", legend: "$legend", cookTime: "$cooktime", servings: "$servings", _id : { $toString: "$_id" }} // Collecting title and slug for each document
+                    $push: { author: "$author", vegan: "$vegan", vegetarian: "$vegetarian", title: "$title", slug: "$slug", legend: "$legend", cookTime: "$cooktime", servings: "$servings", _id: { $toString: "$_id" } } // Collecting title and slug for each document
                 }
             }
         }

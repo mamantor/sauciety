@@ -15,8 +15,8 @@
 		image: string;
 		ingredients: string[];
 		instructions: string[];
-		isVegan: boolean;
-		isVegetarian: boolean;
+		vegan: boolean;
+		vegetarian: boolean;
 		legend: string;
 		notes: string[];
 		servings: number;
@@ -30,7 +30,7 @@
 		image: '',
 		ingredients: [''],
 		instructions: [''],
-		isVegan: false,
+		vegan: false,
 		isVegetarian: false,
 		legend: '',
 		notes: [''],
@@ -144,8 +144,8 @@
 			notes: cleanNotes,
 			servings: form.servings,
 			title: form.title,
-			vegan: form.isVegan,
-			vegetarian: form.isVegetarian,
+			vegan: form.vegan,
+			vegetarian: form.vegetarian,
 			editId: editRecipe?._id,
 			cooktime: form.cooktime,
 			timeUnit: form.timeUnit
@@ -226,7 +226,7 @@
 									<div class={styles.toggleLabel}>Végétarien</div>
 									<div class="relative inline-block h-5 w-11">
 										<input
-											bind:checked={form.isVegetarian}
+											bind:checked={form.vegetarian}
 											id="switch-component-1"
 											type="checkbox"
 											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"
@@ -243,7 +243,7 @@
 									<div class={styles.toggleLabel}>Vegan</div>
 									<div class="relative inline-block h-5 w-11">
 										<input
-											bind:checked={form.isVegan}
+											bind:checked={form.vegan}
 											id="switch-component-2"
 											type="checkbox"
 											class="peer h-5 w-11 cursor-pointer appearance-none rounded-full bg-slate-100 transition-colors duration-300 checked:bg-slate-800"

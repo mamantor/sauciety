@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Clock, Users } from '@lucide/svelte';
+	import { Clock, Leaf, Sprout, Users } from '@lucide/svelte';
 
 	let { recipe, index } = $props();
-
 </script>
 
 <article
@@ -20,11 +19,33 @@
 		}}
 	>
 		<div class="min-w-0 flex-1">
-			<h3 class="font-serif text-lg text-foreground transition-colors group-hover:text-primary">
-				{recipe.title}
-			</h3>
+			<div class="flex items-center gap-2">
+				<h3 class="font-serif text-lg text-foreground transition-colors group-hover:text-primary">
+					{recipe.title}
+				</h3>
+				{#if recipe.vegan}
+					<span
+						class="inline-flex items-center gap-0.5 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold"
+						title="Vegan"
+					>
+						<Sprout class="h-3 w-3" />
+						VG
+					</span>
+				{:else if recipe.vegetarian && !recipe.vegan}
+					<span
+						class="inline-flex items-center gap-0.5 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold"
+						title="Vegetarian"
+					>
+						<Leaf class="h-3 w-3" />
+						V
+					</span>
+				{/if}
+			</div>
 			<p class="mt-1 line-clamp-2 text-sm text-muted-foreground">
 				{recipe.legend}
+			</p>
+			<p class="mt-1 text-xs italic text-muted-foreground/70">
+				par {recipe.author}
 			</p>
 		</div>
 		<div class="flex shrink-0 flex-col items-end gap-1 text-xs text-muted-foreground">

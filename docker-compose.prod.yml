@@ -17,9 +17,6 @@ services:
       - --entrypoints.web.forwardedHeaders.trustedIPs=172.22.0.0/16
       - --entrypoints.websecure.forwardedHeaders.trustedIPs=172.22.0.0/16
       - --log.level=DEBUG
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:

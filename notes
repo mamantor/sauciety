@@ -10,4 +10,6 @@ docker-compose
 
 pour linter : pnpm exec eslint . --fix
 
-pour avoir les logs : docker compose -f docker-compose.dev.yml logs -f app   
+pour avoir les logs : docker compose -f docker-compose.dev.yml logs -f app
+
+pour lancer en prod : docker compose -f docker-compose.prod.yml up -d

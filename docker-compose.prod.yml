@@ -14,8 +14,8 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       - --api.dashboard=true
-      - --entrypoints.web.forwardedHeaders.insecure=true
-      - --entrypoints.websecure.forwardedHeaders.insecure=true
+      - --entrypoints.web.forwardedHeaders.trustedIPs=172.22.0.0/16
+      - --entrypoints.websecure.forwardedHeaders.trustedIPs=172.22.0.0/16
       - --log.level=DEBUG
     ports:
       - "80:80"
@@ -147,6 +147,9 @@ services:
 networks:
   proxy:
     name: proxy
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
   internal:
     name: internal
 

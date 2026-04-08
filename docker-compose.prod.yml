@@ -12,10 +12,14 @@ services:
       - --providers.docker.exposedbydefault=false
 
       - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
       - --api.dashboard=true
-      - --log.level=INFO
+      - --entrypoints.web.forwardedHeaders.insecure=true
+      - --entrypoints.websecure.forwardedHeaders.insecure=true
+      - --log.level=DEBUG
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
@@ -23,9 +27,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.rule=Host(`traefik.turbotonio.com`)
-      - traefik.http.routers.traefik.entrypoints=web
+      - traefik.http.routers.traefik.entrypoints=websecure
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.middlewares=authentik@docker
+      - traefik.http.routers.traefik.tls=true
 
       # Global forward-auth middleware definition (Traefik config)
       - traefik.http.middlewares.authentik.forwardauth.address=http://authentik-server:9000/outpost.goauthentik.io/auth/traefik
@@ -57,6 +62,8 @@ services:
       AUTHENTIK_POSTGRESQL__USER: authentik
       AUTHENTIK_POSTGRESQL__PASSWORD: ${AK_POSTGRES_PASSWORD}
       AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_COOKIE_DOMAIN: turbotonio.com
+      AUTHENTIK_INSECURE: "false"
       # Public URL for redirects (local HTTP is fine for testing)
       AUTHENTIK_HOST: https://auth.turbotonio.com
     command: server
@@ -69,7 +76,8 @@ services:
       - traefik.enable=true
       # Auth UI must NOT be protected by forwardAuth (avoid loops)
       - traefik.http.routers.authentik.rule=Host(`auth.turbotonio.com`)
-      - traefik.http.routers.authentik.entrypoints=web
+      - traefik.http.routers.authentik.entrypoints=websecure
+      - traefik.http.routers.authentik.tls=true
       - traefik.http.services.authentik.loadbalancer.server.port=9000
 
   authentik-worker:
@@ -81,7 +89,8 @@ services:
       AUTHENTIK_POSTGRESQL__USER: authentik
       AUTHENTIK_POSTGRESQL__PASSWORD: ${AK_POSTGRES_PASSWORD}
       AUTHENTIK_POSTGRESQL__NAME: authentik
-      AUTHENTIK_HOST: http://auth.turbotonio.com
+      AUTHENTIK_COOKIE_DOMAIN: turbotonio.com
+      AUTHENTIK_HOST: https://auth.turbotonio.com
     command: worker
     depends_on:
       - authentik-db
@@ -97,9 +106,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.whoami.rule=Host(`whoami.turbotonio.com`)
-      - traefik.http.routers.whoami.entrypoints=web
+      - traefik.http.routers.whoami.entrypoints=websecure
       - traefik.http.routers.whoami.middlewares=authentik@docker
       - traefik.http.services.whoami.loadbalancer.server.port=80
+      - traefik.http.routers.whoami.tls=true
 
   # Your existing mongo (kept internal)
   mongo:
@@ -129,7 +139,8 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy
       - traefik.http.routers.sauciety.rule=Host(`sauciety.turbotonio.com`)
-      - traefik.http.routers.sauciety.entrypoints=web
+      - traefik.http.routers.sauciety.entrypoints=websecure
+      - traefik.http.routers.sauciety.tls=true
       - traefik.http.routers.sauciety.middlewares=authentik@docker
       - traefik.http.services.sauciety.loadbalancer.server.port=5173
 

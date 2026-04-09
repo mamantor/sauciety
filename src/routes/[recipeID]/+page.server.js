@@ -1,4 +1,4 @@
-import { getMongoDatabase } from "$lib/mongo/client"
+import { getMongoDatabase } from "$lib/server/mongo/client"
 import { error, redirect } from '@sveltejs/kit';
 import { ObjectId } from "mongodb";
 

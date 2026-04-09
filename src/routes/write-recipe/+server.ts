@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import { getMongoDatabase } from "$lib/mongo/client";
+import { getMongoDatabase } from "$lib/server/mongo/client";
 import { ObjectId } from "mongodb";
 
 export type SanitizedRecipe = {
@@ -21,11 +21,11 @@ export type SanitizedRecipe = {
   category?: string;
 };
 
-const db = await getMongoDatabase('sauciety')
-
-const collection = db.collection("recipes");
-
 export async function POST({ request }) {
+  const db = await getMongoDatabase('sauciety')
+
+  const collection = db.collection("recipes");
+
   try {
     const data = await request.json();
     if (!data.title || !data.ingredients.length || !data.instructions.length) {

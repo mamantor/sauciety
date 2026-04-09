@@ -120,13 +120,14 @@ services:
       - internal
 
   app:
-    image: node:22-alpine
-    working_dir: /app
-    command: sh -c "corepack enable && pnpm install && pnpm dev -- --host 0.0.0.0"
+    build : .
     environment:
       MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
-    volumes:
-      - .:/app
+      NODE_ENV: production
+      PORT: 3000
+      ORIGIN: https://sauciety.turbotonio.com
+      PROTOCOL_HEADER: x-forwarded-proto
+      HOST_HEADER: x-forwarded-host
     depends_on:
       - mongo
     networks:
@@ -139,7 +140,7 @@ services:
       - traefik.http.routers.sauciety.entrypoints=websecure
       - traefik.http.routers.sauciety.tls=true
       - traefik.http.routers.sauciety.middlewares=authentik@docker
-      - traefik.http.services.sauciety.loadbalancer.server.port=5173
+      - traefik.http.services.sauciety.loadbalancer.server.port=3000
 
 networks:
   proxy:

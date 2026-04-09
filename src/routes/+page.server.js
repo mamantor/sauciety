@@ -1,4 +1,4 @@
-import { getMongoDatabase } from "$lib/mongo/client"
+import { getMongoDatabase } from "$lib/server/mongo/client"
 
 export async function load() {
 

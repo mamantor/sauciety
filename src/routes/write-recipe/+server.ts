@@ -1,4 +1,4 @@
-import { json } from "@sveltejs/kit";
+import { json, error } from "@sveltejs/kit";
 import { getMongoDatabase } from "$lib/server/mongo/client";
 import { ObjectId } from "mongodb";
 
@@ -21,10 +21,19 @@ export type SanitizedRecipe = {
   category?: string;
 };
 
-export async function POST({ request }) {
+export async function POST(event) {
+
+  const session = await event.locals.auth();
+
+  if (!session?.user) {
+    throw error(401, "Unauthorized");
+  }
+
   const db = await getMongoDatabase('sauciety')
 
   const collection = db.collection("recipes");
+
+  const request = event.request;
 
   try {
     const data = await request.json();

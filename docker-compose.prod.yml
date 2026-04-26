@@ -121,6 +121,8 @@ services:
 
   app:
     build : .
+    env_file:
+      - .env.prod
     environment:
       MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
       NODE_ENV: production
@@ -128,6 +130,14 @@ services:
       ORIGIN: https://sauciety.turbotonio.com
       PROTOCOL_HEADER: x-forwarded-proto
       HOST_HEADER: x-forwarded-host
+
+      AUTH_DEBUG: "true"
+      AUTH_URL: "https://sauciety.turbotonio.com"
+      AUTH_TRUST_HOST: "true"
+      # AUTH_SECRET: ${AUTH_SECRET}
+      # OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      # OIDC_CLIENT_ISSUER: ${OIDC_CLIENT_ISSUER}
+      # OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
     depends_on:
       - mongo
     networks:
@@ -139,7 +149,6 @@ services:
       - traefik.http.routers.sauciety.rule=Host(`sauciety.turbotonio.com`)
       - traefik.http.routers.sauciety.entrypoints=websecure
       - traefik.http.routers.sauciety.tls=true
-      - traefik.http.routers.sauciety.middlewares=authentik@docker
       - traefik.http.services.sauciety.loadbalancer.server.port=3000
 
 networks:

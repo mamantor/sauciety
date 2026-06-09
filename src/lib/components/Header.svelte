@@ -1,6 +1,6 @@
 <script>
 	import { ChefHat } from '@lucide/svelte';
-  import { page } from '$app/state';
+	import { page } from '$app/state';
 	const session = $derived(page.data.session);
 </script>
 
@@ -12,10 +12,10 @@
 				Turbo Tonio's Sauciety
 			</h1>
 		</div>
-    <div class="mr-24 flex items-center gap-2">
-      {#if session?.user}
-        <p>bonjour {session.user.email ?? session.user.name}</p>
-      {/if}
-    </div>
+		<div class="mr-24 flex items-center gap-2">
+			{#if session?.user}
+				<p>bonjour {session.user.email ?? session.user.name}</p>
+			{/if}
+		</div>
 	</div>
 </header>

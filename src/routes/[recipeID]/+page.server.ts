@@ -1,6 +1,5 @@
 import { getMongoDatabase } from "$lib/server/mongo/client"
 import { error, redirect } from '@sveltejs/kit';
-import { ObjectId } from "mongodb";
 import type { PageServerLoad } from './$types';
 import type { Recipe, RecipeClient } from '$lib/types/recipe';
 

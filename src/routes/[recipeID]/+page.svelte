@@ -68,7 +68,7 @@
 					<div>
 						<h2 class="mb-4 font-serif text-xl text-foreground">Ingredients</h2>
 						<ul class="space-y-2">
-							{#each data.recipe.ingredients as ingredient, i}
+							{#each data.recipe.ingredients as ingredient}
 								<li class="flex items-start gap-3 text-sm text-foreground">
 									<span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"> </span>
 									{ingredient}

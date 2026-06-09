@@ -4,6 +4,9 @@
 	import { enhance } from '$app/forms';
 
 	let { data } = $props();
+
+	const session = data.session;
+	
 </script>
 
 <main class="container py-6 pb-20">
@@ -31,19 +34,21 @@
 							{data.recipe.title}
 						</h1>
 					</div>
-					<div class="flex gap-6">
-						<button
-							onclick={() => goto(`/write-recipe?id=${data.recipe._id}`)}
-							class="shrink-0 text-muted-foreground hover:text-primary"
-						>
-							<Pen class="h-4 w-4" />
-						</button>
-						<form method="POST" action="?/delete" use:enhance>
-							<button type="submit" class="shrink-0 text-muted-foreground hover:text-destructive">
-								<Trash2 class="h-4 w-4" />
+					{#if session?.user}
+						<div class="flex gap-6">
+							<button
+								onclick={() => goto(`/write-recipe?id=${data.recipe._id}`)}
+								class="shrink-0 text-muted-foreground hover:text-primary"
+							>
+								<Pen class="h-4 w-4" />
 							</button>
-						</form>
-					</div>
+							<form method="POST" action="?/delete" use:enhance>
+								<button type="submit" class="shrink-0 text-muted-foreground hover:text-destructive">
+									<Trash2 class="h-4 w-4" />
+								</button>
+							</form>
+						</div>
+					{/if}
 				</div>
 
 				<p class="mt-2 text-muted-foreground">{data.recipe.legend}</p>
@@ -63,7 +68,7 @@
 					<div>
 						<h2 class="mb-4 font-serif text-xl text-foreground">Ingredients</h2>
 						<ul class="space-y-2">
-							{#each data.recipe.ingredients as ingredient, i}
+							{#each data.recipe.ingredients as ingredient}
 								<li class="flex items-start gap-3 text-sm text-foreground">
 									<span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"> </span>
 									{ingredient}

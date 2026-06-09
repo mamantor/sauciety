@@ -11,7 +11,7 @@
 </script>
 
 <div>
-	<Menu/>
-	<Header/>
+	<Menu />
+	<Header />
 	{@render children()}
 </div>

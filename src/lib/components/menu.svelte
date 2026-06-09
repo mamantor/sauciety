@@ -1,15 +1,34 @@
 <script>
-	export let menuItems = [
+	import { page } from '$app/state';
+	import { signIn } from '@auth/sveltekit/client';
+
+	const menuItems = [
 		{ text: 'Sommaire', href: '/' },
-		{ text: 'Ecrire une recette', href: '/write-recipe' }
+		{ text: 'Ecrire une recette', href: '/write-recipe', protected: true }
 	];
+
+	const session = $derived(page.data.session);
+	const isLoggedIn = $derived(Boolean(session?.user));
 </script>
 
 <div class="bookmark-menu">
 	<ul class="menu">
 		{#each menuItems as item}
-			<li><a class="text-foreground" href={item.href}>{item.text}</a></li>
+			{#if !item.protected || session?.user}
+				<li><a class="text-foreground" href={item.href}>{item.text}</a></li>
+			{/if}
 		{/each}
+		{#if !isLoggedIn}
+			<li>
+				<button
+					type="button"
+					class="w-full cursor-pointer text-left text-foreground"
+					onclick={() => signIn('authentik')}
+				>
+					Connexion
+				</button>
+			</li>
+		{/if}
 	</ul>
 </div>
 
@@ -26,9 +45,8 @@
 		left: 10px;
 		width: 180px;
 		height: 150px;
-		transition:
-			transform 0.3s ease;
-			transform-origin: top left;
+		transition: transform 0.3s ease;
+		transform-origin: top left;
 
 		&:not(:hover) {
 			transform: scale(0.4);
@@ -39,7 +57,7 @@
 			display: block;
 			width: 0;
 			height: 0;
-			margin-top:62px;
+			margin-top: 62px;
 			border-left: 90px solid #cc5933;
 			border-right: 91px solid #cc5933;
 			border-bottom: 50px solid transparent;
@@ -50,9 +68,6 @@
 				bottom 0.3s ease;
 		}
 
-
-		
-
 		.menu {
 			margin: 0;
 			padding: 0;
@@ -62,7 +77,8 @@
 			transition: opacity 0.3s ease;
 
 			li {
-				a {
+				a,
+				button {
 					display: block;
 					padding: 10px;
 					color: #fff;

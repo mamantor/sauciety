@@ -1,10 +1,5 @@
 services:
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
-    restart: unless-stopped
-    networks:
-      - proxy
+  
   traefik:
     image: traefik:v3.6.1
     command:
@@ -13,21 +8,27 @@ services:
 
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
+
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+
+      - --entrypoints.websecure.forwardedHeaders.insecure=true
+
       - --api.dashboard=true
-      - --entrypoints.web.forwardedHeaders.trustedIPs=172.22.0.0/16
-      - --entrypoints.websecure.forwardedHeaders.trustedIPs=172.22.0.0/16
       - --log.level=DEBUG
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - proxy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik.turbotonio.com`)
-      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.rule=Host(`traefik.localtest.me`)
+      - traefik.http.routers.traefik.entrypoints=web
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.middlewares=authentik@docker
-      - traefik.http.routers.traefik.tls=true
 
       # Global forward-auth middleware definition (Traefik config)
       - traefik.http.middlewares.authentik.forwardauth.address=http://authentik-server:9000/outpost.goauthentik.io/auth/traefik
@@ -59,10 +60,8 @@ services:
       AUTHENTIK_POSTGRESQL__USER: authentik
       AUTHENTIK_POSTGRESQL__PASSWORD: ${AK_POSTGRES_PASSWORD}
       AUTHENTIK_POSTGRESQL__NAME: authentik
-      AUTHENTIK_COOKIE_DOMAIN: turbotonio.com
-      AUTHENTIK_INSECURE: "false"
       # Public URL for redirects (local HTTP is fine for testing)
-      AUTHENTIK_HOST: https://auth.turbotonio.com
+      AUTHENTIK_HOST: https://auth.localtest.me
     command: server
     depends_on:
       - authentik-db
@@ -72,7 +71,7 @@ services:
     labels:
       - traefik.enable=true
       # Auth UI must NOT be protected by forwardAuth (avoid loops)
-      - traefik.http.routers.authentik.rule=Host(`auth.turbotonio.com`)
+      - traefik.http.routers.authentik.rule=Host(`auth.localtest.me`)
       - traefik.http.routers.authentik.entrypoints=websecure
       - traefik.http.routers.authentik.tls=true
       - traefik.http.services.authentik.loadbalancer.server.port=9000
@@ -86,8 +85,7 @@ services:
       AUTHENTIK_POSTGRESQL__USER: authentik
       AUTHENTIK_POSTGRESQL__PASSWORD: ${AK_POSTGRES_PASSWORD}
       AUTHENTIK_POSTGRESQL__NAME: authentik
-      AUTHENTIK_COOKIE_DOMAIN: turbotonio.com
-      AUTHENTIK_HOST: https://auth.turbotonio.com
+      AUTHENTIK_HOST: https://auth.localtest.me
     command: worker
     depends_on:
       - authentik-db
@@ -95,18 +93,19 @@ services:
     networks:
       - proxy
 
-  # A tiny demo app to test protection
-  whoami:
-    image: traefik/whoami:v1.11.0
-    networks:
-      - proxy
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.whoami.rule=Host(`whoami.turbotonio.com`)
-      - traefik.http.routers.whoami.entrypoints=websecure
-      - traefik.http.routers.whoami.middlewares=authentik@docker
-      - traefik.http.services.whoami.loadbalancer.server.port=80
-      - traefik.http.routers.whoami.tls=true
+  # # A tiny demo app to test protection
+  # whoami:
+  #   image: traefik/whoami:v1.11.0
+  #   networks:
+  #     - proxy
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.whoami.rule=Host(`whoami.localtest.me`)
+  #     - traefik.http.routers.whoami.entrypoints=websecure
+  #     - traefik.http.routers.whoami.middlewares=authentik@docker
+  #     - traefik.http.services.whoami.loadbalancer.server.port=80
+  #     - traefik.http.routers.whoami.tls=true
+
 
   # Your existing mongo (kept internal)
   mongo:
@@ -120,24 +119,22 @@ services:
       - internal
 
   app:
-    build : .
+    image: node:22-alpine
     env_file:
-      - .env.prod
+      - .env.local
+    working_dir: /app
+    command: sh -c "corepack enable && pnpm install && ORIGIN=https://sauciety.localtest.me PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host AUTH_URL=https://sauciety.localtest.me pnpm dev -- --host 0.0.0.0"
     environment:
-      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
-      NODE_ENV: production
-      PORT: 3000
-      ORIGIN: https://sauciety.turbotonio.com
-      PROTOCOL_HEADER: x-forwarded-proto
-      HOST_HEADER: x-forwarded-host
-
       AUTH_DEBUG: "true"
-      AUTH_URL: "https://sauciety.turbotonio.com"
       AUTH_TRUST_HOST: "true"
-      # AUTH_SECRET: ${AUTH_SECRET}
-      # OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
-      # OIDC_CLIENT_ISSUER: ${OIDC_CLIENT_ISSUER}
-      # OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      AUTH_URL: https://sauciety.localtest.me
+      HOST_HEADER: x-forwarded-host
+      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+      ORIGIN: https://sauciety.localtest.me
+      PROTOCOL_HEADER: x-forwarded-proto
+    volumes:
+      - .:/app
     depends_on:
       - mongo
     networks:
@@ -146,17 +143,17 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - traefik.http.routers.sauciety.rule=Host(`sauciety.turbotonio.com`)
+      - traefik.http.routers.sauciety.rule=Host(`sauciety.localtest.me`)
       - traefik.http.routers.sauciety.entrypoints=websecure
       - traefik.http.routers.sauciety.tls=true
-      - traefik.http.services.sauciety.loadbalancer.server.port=3000
+      - traefik.http.services.sauciety.loadbalancer.server.port=5173
+    extra_hosts:
+      - "auth.localtest.me:host-gateway"
+      - "sauciety.localtest.me:host-gateway"
 
 networks:
   proxy:
     name: proxy
-    ipam:
-      config:
-        - subnet: 172.22.0.0/16
   internal:
     name: internal
 

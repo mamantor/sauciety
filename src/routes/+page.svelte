@@ -1,7 +1,6 @@
 <script>
 	import MenuSection from '$lib/components/MenuSection.svelte';
 	import SearchBar from '$lib/components/SearchBar.svelte';
-	import styles from './page.module.scss';
 	import { UtensilsCrossed } from '@lucide/svelte';
 
 	let { data } = $props();
@@ -30,9 +29,9 @@
 		<div class="mb-8 text-center">
 			<div class="inline-block">
 				<div class="mb-2 flex items-center justify-between">
-					<div class="h-px w-12 bg-primary/50" />
+					<div class="h-px w-12 bg-primary/50" ></div>
 					<UtensilsCrossed class="h-5 w-5 text-primary" />
-					<div class="h-px w-12 bg-primary/50" />
+					<div class="h-px w-12 bg-primary/50" ></div>
 				</div>
 				<h1 class="font-serif text-2xl text-foreground md:text-3xl">Au Menu</h1>
 			</div>

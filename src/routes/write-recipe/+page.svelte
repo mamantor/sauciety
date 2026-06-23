@@ -118,13 +118,17 @@
 					cropArea.width,
 					cropArea.height
 				);
-				canvas.toBlob((blob) => {
-					if (!blob) return reject('Could not create image blob');
+				canvas.toBlob(
+					(blob) => {
+						if (!blob) return reject('Could not create image blob');
 
-					croppedImageBlob = blob;
-					form.image = URL.createObjectURL(blob); // only for preview
-					resolve(blob);
-				}, 'image/png');
+						croppedImageBlob = blob;
+						form.image = URL.createObjectURL(blob);
+						resolve(blob);
+					},
+					'image/jpeg',
+					0.82
+				);
 			};
 			img.onerror = reject;
 		});
@@ -150,7 +154,7 @@
 		formData.append('category', form.category);
 		formData.append('cooktime', form.cooktime.toString());
 		if (croppedImageBlob) {
-			formData.append('image', croppedImageBlob, 'recipe-image.png');
+			formData.append('image', croppedImageBlob, 'recipe-image.jpg');
 		}
 		formData.append('legend', form.legend);
 		formData.append('servings', form.servings.toString());
@@ -180,20 +184,10 @@
 			timeUnit: form.timeUnit
 		};
 
-		console.log('Submitting recipe:', recipe);
-
-		console.log('USING FORMDATA');
-		console.log(formData instanceof FormData);
-		for (const [k, v] of formData.entries()) {
-			console.log(k, v);
-		}
-
 		const response = await fetch('/write-recipe', {
 			method: 'POST',
 			body: formData
 		});
-
-		console.log(response);
 
 		if (response.ok) {
 			const result = await response.json();
@@ -227,7 +221,7 @@
 					<div>
 						<label class="mb-2 block" for="recipe-category">Categorie </label>
 						<select id="recipe-category" class="input-base" bind:value={form.category}>
-							<option value="">Choisir une catégoriedd</option>
+							<option value="">Choisir une catégorie</option>
 							<option value="Plat">🍽️ Plat</option>
 							<option value="Dessert">🍰 Dessert</option>
 							<option value="Apéro">🍷 Apéro</option>

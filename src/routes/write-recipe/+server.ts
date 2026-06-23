@@ -41,7 +41,6 @@ export async function POST(event) {
 
   const request = event.request;
 
-  console.log(request)
 
   try {
     const data = await request.formData();
@@ -51,9 +50,6 @@ export async function POST(event) {
     const instructions = JSON.parse(data.get("instructions")?.toString() || "");
     const notes = JSON.parse(data.get("notes")?.toString() || "");
     const editId = data.get("editId")?.toString() || "";
-
-    console.log('ingredients:', ingredients);
-    console.log('instructions:', instructions);
 
     if (!title || !ingredients.length || !instructions.length) {
       return json({ error: "Invalid data" }, { status: 400 });
@@ -73,9 +69,6 @@ export async function POST(event) {
       instructions: Array.isArray(instructions) ? instructions.map(String) : [],
       notes: Array.isArray(notes) ? notes.map(String) : [],
     };
-
-    console.log('Sanitized data:', sanitizedData);
-
 
     const imageFile = data.get('image');
 

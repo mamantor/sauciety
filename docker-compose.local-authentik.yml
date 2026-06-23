@@ -117,13 +117,15 @@ services:
       - mongo_data:/data/db
     networks:
       - internal
+    ports:
+      - "27017:27017"
 
   app:
     image: node:22-alpine
     env_file:
       - .env.local
     working_dir: /app
-    command: sh -c "corepack enable && pnpm install && ORIGIN=https://sauciety.localtest.me PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host AUTH_URL=https://sauciety.localtest.me pnpm dev -- --host 0.0.0.0"
+    command: sh -c "corepack enable && pnpm install --config.confirmModulesPurge=false && ORIGIN=https://sauciety.localtest.me PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host AUTH_URL=https://sauciety.localtest.me pnpm dev -- --host 0.0.0.0"
     environment:
       AUTH_DEBUG: "true"
       AUTH_TRUST_HOST: "true"

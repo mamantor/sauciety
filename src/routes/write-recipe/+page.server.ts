@@ -3,7 +3,30 @@ import { redirect } from '@sveltejs/kit';
 import { ObjectId } from 'mongodb';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (event) => {
+type recipeFromDB = {
+    _id: ObjectId;
+    title: string;
+    ingredients: string[];
+    instructions: string[];
+    description?: string;
+    tags?: string[];
+    slug: string;
+    legend?: string;
+    author?: string;
+    servings?: number;
+    cooktime?: number;
+    timeUnit?: string;
+    vegetarian?: boolean;
+    vegan?: boolean;
+    notes?: string[];
+    category?: string;
+};
+
+export type EditableRecipe = Omit<recipeFromDB, '_id'> & {
+    _id: string;
+};
+
+export const load : PageServerLoad = (async (event) => {
     const session = await event.locals.auth();
 
     if (!session?.user) {
@@ -14,13 +37,20 @@ export const load: PageServerLoad = async (event) => {
 
     if (id) {
         const db = await getMongoDatabase('sauciety')
-        const recipesCollection = db.collection('recipes');
-        const recipe = await recipesCollection.findOne({ _id: new ObjectId(id) });
+        const recipesCollection = db.collection<recipeFromDB>('recipes');
+        const recipe = await recipesCollection.findOne({ _id: new ObjectId(id) }, {
+            projection: {
+                image: 0
+            }
+        });
 
         if (recipe) {
-            return {
-                editRecipe: { ...recipe, _id: recipe._id.toString() },
-            }
+            const editRecipe: EditableRecipe = {
+                ...recipe,
+                _id: recipe._id.toString()
+            };
+
+            return { editRecipe };
         }
     }
 
@@ -29,4 +59,4 @@ export const load: PageServerLoad = async (event) => {
     }
 
 
-};
+})

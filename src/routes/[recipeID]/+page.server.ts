@@ -37,7 +37,11 @@ export const load: PageServerLoad = async (event) => {
 	const db = await getMongoDatabase('sauciety')
 	const recipesCollection = db.collection<Recipe>('recipes');
 	const recipeSlug = params.recipeID;
-	const recipe = await recipesCollection.findOne({ slug: recipeSlug });
+	const recipe = await recipesCollection.findOne({ slug: recipeSlug }, {
+		projection: {
+			image: 0
+		}
+	});
 
 
 	if (!recipe) {

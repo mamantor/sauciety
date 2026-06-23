@@ -4,8 +4,10 @@
 	import styles from './page.module.scss';
 	import Cropper from 'svelte-easy-crop';
 	import { Trash } from 'svelte-heros';
+	import type { EditableRecipe } from './+page.server';
 
 	export let data;
+
 	const { editRecipe } = data;
 
 	type formType = {
@@ -22,7 +24,7 @@
 		servings: number;
 		timeUnit: string;
 		title: string;
-	}
+	};
 
 	let defaultValues = {
 		category: '',
@@ -31,7 +33,7 @@
 		ingredients: [''],
 		instructions: [''],
 		vegan: false,
-		isVegetarian: false,
+		vegetarian: false,
 		legend: '',
 		notes: [''],
 		servings: 0,
@@ -42,7 +44,7 @@
 
 	let base64RawImage: string = '';
 
-	const withDefaults = (r: any) => ({
+	const withDefaults = (r: EditableRecipe | null) => ({
 		...defaultValues,
 		...(r ?? {}),
 		// ensure array fields are never empty / undefined
@@ -52,6 +54,8 @@
 	});
 
 	let form: formType = withDefaults(editRecipe);
+
+	let croppedImageBlob: Blob | null = null;
 
 	// Cropper state
 	let cropArea = { x: 0, y: 0, width: 0, height: 0 };
@@ -114,8 +118,13 @@
 					cropArea.width,
 					cropArea.height
 				);
-				form.image = canvas.toDataURL('image/png');
-				resolve(form.image);
+				canvas.toBlob((blob) => {
+					if (!blob) return reject('Could not create image blob');
+
+					croppedImageBlob = blob;
+					form.image = URL.createObjectURL(blob); // only for preview
+					resolve(blob);
+				}, 'image/png');
 			};
 			img.onerror = reject;
 		});
@@ -134,6 +143,26 @@
 			alert('At least one ingredient and one instruction are required.');
 			return;
 		}
+
+		const formData = new FormData();
+
+		formData.append('author', form.author);
+		formData.append('category', form.category);
+		formData.append('cooktime', form.cooktime.toString());
+		if (croppedImageBlob) {
+			formData.append('image', croppedImageBlob, 'recipe-image.png');
+		}
+		formData.append('legend', form.legend);
+		formData.append('servings', form.servings.toString());
+		formData.append('timeUnit', form.timeUnit);
+		formData.append('title', form.title);
+		formData.append('vegan', form.vegan.toString());
+		formData.append('vegetarian', form.vegetarian.toString());
+		formData.append('editId', editRecipe?._id ?? '');
+		formData.append(`ingredients`, JSON.stringify(cleanIngredients));
+		formData.append(`instructions`, JSON.stringify(cleanInstructions));
+		formData.append(`notes`, JSON.stringify(cleanNotes));
+
 		const recipe = {
 			author: form.author,
 			category: form.category,
@@ -150,11 +179,22 @@
 			cooktime: form.cooktime,
 			timeUnit: form.timeUnit
 		};
+
+		console.log('Submitting recipe:', recipe);
+
+		console.log('USING FORMDATA');
+		console.log(formData instanceof FormData);
+		for (const [k, v] of formData.entries()) {
+			console.log(k, v);
+		}
+
 		const response = await fetch('/write-recipe', {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(recipe)
+			body: formData
 		});
+
+		console.log(response);
+
 		if (response.ok) {
 			const result = await response.json();
 
@@ -187,7 +227,7 @@
 					<div>
 						<label class="mb-2 block" for="recipe-category">Categorie </label>
 						<select id="recipe-category" class="input-base" bind:value={form.category}>
-							<option value="">Choisir une catégorie</option>
+							<option value="">Choisir une catégoriedd</option>
 							<option value="Plat">🍽️ Plat</option>
 							<option value="Dessert">🍰 Dessert</option>
 							<option value="Apéro">🍷 Apéro</option>

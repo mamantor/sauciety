@@ -6,7 +6,6 @@
 	let { data } = $props();
 
 	const session = data.session;
-	
 </script>
 
 <main class="container py-6 pb-20">
@@ -21,7 +20,11 @@
 
 		<div class="shadow-soft overflow-hidden rounded-xl bg-card">
 			<div class="aspect-video overflow-hidden md:aspect-[21/9]">
-				<img src={data.recipe.image} alt={data.recipe.title} class="h-full w-full object-cover" />
+				<img
+					src={`/${data.recipe.slug}/image`}
+					alt={data.recipe.title}
+					class="h-full w-full object-cover"
+				/>
 			</div>
 
 			<div class="p-5 md:p-8">

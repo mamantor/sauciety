@@ -6,7 +6,7 @@ WORKDIR /app
 RUN corepack enable
 
 # Copy lockfile + manifest first for better caching
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy the rest and build
@@ -21,7 +21,7 @@ RUN corepack enable
 
 # Copy build output + minimal deps
 COPY --from=build /app/build ./build
-COPY --from=build /app/package.json /app/pnpm-lock.yaml ./
+COPY --from=build /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
 RUN pnpm install --prod --frozen-lockfile
 
 EXPOSE 3000

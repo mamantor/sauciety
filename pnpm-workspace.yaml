@@ -7,3 +7,6 @@ allowBuilds:
   '@sveltejs/kit': true
   esbuild: true
   svelte-preprocess: true
+
+minimumReleaseAgeExclude:
+  - vite@8.1.0

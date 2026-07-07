@@ -1,7 +1,7 @@
 import js from "@eslint/js";
+import globals from "globals";
 import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginSvelte from "eslint-plugin-svelte";
-import globals from "globals";
 import svelteParser from "svelte-eslint-parser";
 import tsEslint from "typescript-eslint";
 

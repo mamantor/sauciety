@@ -137,6 +137,9 @@ services:
       PROTOCOL_HEADER: x-forwarded-proto
     volumes:
       - .:/app
+      - node_modules:/app/node_modules
+      - pnpm_store:/pnpm-store
+
     depends_on:
       - mongo
     networks:
@@ -162,3 +165,5 @@ networks:
 volumes:
   authentik_db:
   mongo_data:
+  pnpm_store:
+  node_modules:

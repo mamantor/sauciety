@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>Turbo Tonio Sauciety</title>
+</svelte:head>
+
 <script lang="ts">
 	import '../app.css';
 	import Menu from '$lib/components/Menu/menu.svelte';

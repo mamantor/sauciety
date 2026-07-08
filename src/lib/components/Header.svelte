@@ -9,7 +9,7 @@
 		<div class="ml-24 flex items-center gap-2">
 			<TurboTonioLogo />
 			<h1 class="font-serif text-xl font-medium text-foreground md:text-2xl">
-				Turbo Tonio's Sauciety
+				Sauciety
 			</h1>
 		</div>
 		<div class="mr-24 flex items-center gap-2">

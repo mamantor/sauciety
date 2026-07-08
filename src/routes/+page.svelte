@@ -23,7 +23,6 @@
 <main class="container py-6 pb-20">
 	<div class="mb-8">
 		<SearchBar bind:value={search} />
-		{search}
 	</div>
 	<div class="mx-auto max-w-2xl rounded-lg bg-card p-6 shadow-card md:p-8">
 		<div class="mb-8 text-center">

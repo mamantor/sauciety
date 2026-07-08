@@ -109,7 +109,7 @@ services:
 
   # Your existing mongo (kept internal)
   mongo:
-    image: mongo:8
+    image: mongo:4.4.18
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}

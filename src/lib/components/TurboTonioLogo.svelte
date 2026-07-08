@@ -1,7 +1,5 @@
 <script>
   import logo from '$lib/assets/logos/logo_turbotonio_car_3.svg';
-
-  console.log(logo)
 </script>
 
 <div class="logo-container">

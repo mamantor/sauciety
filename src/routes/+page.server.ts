@@ -1,12 +1,29 @@
 import { getMongoDatabase } from "$lib/server/mongo/client"
 
+export type Recipe = {
+    author: string;
+    vegan: boolean;
+    vegetarian: boolean;
+    title: string;
+    slug: string;
+    legend: string;
+    cookTime: number;
+    servings: number;
+    _id: string;
+}
+
+export type RecipeCategory = {
+    _id: string;
+    items: Recipe[];
+}
+
 export async function load() {
 
     const db = await getMongoDatabase('sauciety')
 
     const collection = db.collection("recipes");
     const generalCollection = db.collection('general');
-    const recipes = await collection.aggregate([
+    const recipes = await collection.aggregate<RecipeCategory>([
         {
             $group: {
                 _id: "$category", // Grouping by category

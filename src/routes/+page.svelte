@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import MenuSection from '$lib/components/MenuSection.svelte';
 	import SearchBar from '$lib/components/SearchBar.svelte';
 	import { UtensilsCrossed } from '@lucide/svelte';
@@ -17,7 +17,6 @@
 			})
 			.filter((category) => category.items.length > 0);
 	});
-
 </script>
 
 <main class="container py-6 pb-20">
@@ -28,15 +27,15 @@
 		<div class="mb-8 text-center">
 			<div class="inline-block">
 				<div class="mb-2 flex items-center justify-between">
-					<div class="h-px w-12 bg-primary/50" ></div>
+					<div class="h-px w-12 bg-primary/50"></div>
 					<UtensilsCrossed class="h-5 w-5 text-primary" />
-					<div class="h-px w-12 bg-primary/50" ></div>
+					<div class="h-px w-12 bg-primary/50"></div>
 				</div>
 				<h1 class="font-serif text-2xl text-foreground md:text-3xl">Au Menu</h1>
 			</div>
 		</div>
 		{#each filtered as category (category._id)}
-			<MenuSection category={category} />
+			<MenuSection {category} />
 		{/each}
 	</div>
 </main>

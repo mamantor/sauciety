@@ -13,7 +13,6 @@ export default defineConfig({
 			// Include global SCSS variables or mixins if needed
 			additionalData: `@use '$lib/styles/global.scss';`,
 		  },
-		  postcss: true
 		},
 	  },
 });

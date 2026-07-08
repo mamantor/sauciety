@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, type Db } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 let clientPromise: Promise<MongoClient> | undefined;
@@ -18,7 +18,7 @@ function getMongoClient() {
   return clientPromise;
 }
 
-export async function getMongoDatabase(dbName?: string) {
+export async function getMongoDatabase(dbName?: string): Promise<Db> {
   const client = await getMongoClient();
   return client.db(dbName);
 }

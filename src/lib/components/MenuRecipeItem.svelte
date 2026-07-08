@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { Clock, Leaf, Sprout, Users } from '@lucide/svelte';
 
 	let { recipe, index } = $props();
@@ -7,15 +8,15 @@
 
 <article
 	class="group -mx-4 animate-fade-in cursor-pointer border-b border-border/50 px-4 py-4 transition-colors last:border-b-0 hover:bg-accent/30"
-	style={{ animationDelay: `${index * 50}ms` }}
+	style={`animation-delay: ${index * 50}ms`}
 >
 	<div
 		class="flex items-start justify-between gap-4"
-		onclick={() => goto(recipe.slug)}
+		onclick={() => goto(resolve(`/${recipe.slug}`))}
 		role="link"
 		tabindex={index}
 		onkeypress={(e) => {
-			if (e.key === 'Enter') goto(recipe.slug);
+			if (e.key === 'Enter') goto(resolve(`/${recipe.slug}`));
 		}}
 	>
 		<div class="min-w-0 flex-1">

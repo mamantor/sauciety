@@ -5,6 +5,7 @@
 	import Cropper from 'svelte-easy-crop';
 	import { Trash } from 'svelte-heros';
 	import type { EditableRecipe } from './+page.server';
+	import { resolve } from '$app/paths';
 
 	export let data;
 
@@ -167,23 +168,6 @@
 		formData.append(`instructions`, JSON.stringify(cleanInstructions));
 		formData.append(`notes`, JSON.stringify(cleanNotes));
 
-		const recipe = {
-			author: form.author,
-			category: form.category,
-			image: form.image,
-			ingredients: cleanIngredients,
-			instructions: cleanInstructions,
-			legend: form.legend,
-			notes: cleanNotes,
-			servings: form.servings,
-			title: form.title,
-			vegan: form.vegan,
-			vegetarian: form.vegetarian,
-			editId: editRecipe?._id,
-			cooktime: form.cooktime,
-			timeUnit: form.timeUnit
-		};
-
 		const response = await fetch('/write-recipe', {
 			method: 'POST',
 			body: formData
@@ -193,7 +177,7 @@
 			const result = await response.json();
 
 			if (result.recipe.slug) {
-				goto(`/` + result.recipe.slug);
+				goto(resolve(`/${result.recipe.slug}`));
 			} else {
 				alert('Recipe added successfully!');
 			}
@@ -356,7 +340,7 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Ingredients</h3>
 		<div class={styles.section__data}>
-			{#each form.ingredients as ingredient, index}
+			{#each form.ingredients as ingredient, index (index)}
 				<div class={styles.input_group}>
 					<input bind:value={ingredient} class="input-base" />
 					<button class={styles.del_btn} onclick={() => removeIngredient(index)}>
@@ -370,7 +354,7 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Instructions</h3>
 		<div class={styles.section__data}>
-			{#each form.instructions as instruction, index}
+			{#each form.instructions as instruction, index (index)}
 				<div class={styles.input_group}>
 					<textarea bind:value={instruction} class="input-base"></textarea>
 					<button class={styles.del_btn} onclick={() => removeInstruction(index)}>
@@ -384,9 +368,9 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Notes</h3>
 		<div class={styles.section__data}>
-			{#each form.notes as note, index}
+			{#each form.notes as note, index (index)}
 				<div class={styles.input_group}>
-					<textarea bind:value={note} class="input-base"> </textarea>
+					<textarea bind:value={note} class="input-base"></textarea>
 					<button class={styles.del_btn} onclick={() => removeNote(index)}>
 						<Trash class="h-5 w-5" />
 					</button>

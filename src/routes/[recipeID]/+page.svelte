@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { ArrowLeft, Clock, Pen, Trash2, Users } from '@lucide/svelte';
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 
@@ -11,7 +12,7 @@
 <main class="container py-6 pb-20">
 	<div class="animate-fade-in">
 		<button
-			onclick={() => goto('/')}
+			onclick={() => goto(resolve('/'))}
 			class="mb-4 flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<ArrowLeft class="h-4 w-4" />
@@ -19,7 +20,7 @@
 		</button>
 
 		<div class="shadow-soft overflow-hidden rounded-xl bg-card">
-			<div class="aspect-video overflow-hidden md:aspect-[21/9]">
+			<div class="aspect-video overflow-hidden md:aspect-21/9">
 				<img
 					src={`/${data.recipe.slug}/image`}
 					alt={data.recipe.title}
@@ -40,7 +41,7 @@
 					{#if session?.user}
 						<div class="flex gap-6">
 							<button
-								onclick={() => goto(`/write-recipe?id=${data.recipe._id}`)}
+								onclick={() => goto(resolve(`/write-recipe?id=${data.recipe._id}`))}
 								class="shrink-0 text-muted-foreground hover:text-primary"
 							>
 								<Pen class="h-4 w-4" />
@@ -71,7 +72,7 @@
 					<div>
 						<h2 class="mb-4 font-serif text-xl text-foreground">Ingredients</h2>
 						<ul class="space-y-2">
-							{#each data.recipe.ingredients as ingredient}
+							{#each data.recipe.ingredients as ingredient, index (index)}
 								<li class="flex items-start gap-3 text-sm text-foreground">
 									<span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"> </span>
 									{ingredient}
@@ -83,10 +84,10 @@
 					<div>
 						<h2 class="mb-4 font-serif text-xl text-foreground">Instructions</h2>
 						<ol class="space-y-4">
-							{#each data.recipe.instructions as step, i}
+							{#each data.recipe.instructions as step, index (index)}
 								<li class="flex gap-3 text-sm">
 									<span class="shrink-0 font-serif font-medium text-primary">
-										{i + 1}.
+										{index + 1}.
 									</span>
 									<span class="text-foreground">{step}</span>
 								</li>

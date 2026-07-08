@@ -138,6 +138,10 @@ services:
       # OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
       # OIDC_CLIENT_ISSUER: ${OIDC_CLIENT_ISSUER}
       # OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - pnpm_store:/pnpm-store
     depends_on:
       - mongo
     networks:
@@ -163,3 +167,5 @@ networks:
 volumes:
   authentik_db:
   mongo_data:
+  pnpm_store:
+  node_modules:

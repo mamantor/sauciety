@@ -11,6 +11,7 @@ RUN pnpm install --frozen-lockfile
 
 # Copy the rest and build
 COPY . .
+
 RUN pnpm build
 
 # Runtime stage

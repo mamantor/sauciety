@@ -12,12 +12,12 @@ services:
   app:
     image: node:22-alpine
     working_dir: /app
-    command: sh -c "corepack enable && pnpm install && pnpm dev -- --host 0.0.0.0"
+    command: sh -c "corepack enable && pnpm install && pnpm dev --host 0.0.0.0"
     ports:
       - "5173:5173"
     environment:
-      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
-      PNPM_STORE_DIR: /pnpm/store
+      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/sauciety?authSource=admin
+      PNPM_STORE_DIR: /pnpm-store
     volumes:
       - .:/app
       - node_modules:/app/node_modules

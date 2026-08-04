@@ -14,7 +14,7 @@
 		</div>
 		<div class="mr-24 flex items-center gap-2">
 			{#if session?.user}
-				<p>bonjour {session.user.email ?? session.user.name}</p>
+				<p class="font-sans text-sm text-foreground">bonjour {session.user.name}</p>
 			{/if}
 		</div>
 	</div>

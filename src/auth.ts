@@ -11,6 +11,9 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 
         async jwt({ token, account, profile }) {
             console.log("JWT CALLBACK", { token, account, profile });
+            if (profile) {
+                token.name = profile.nickname ?? profile.preferred_username ?? token.name;
+            }
             return token;
         },
         async session({ session, token }) {

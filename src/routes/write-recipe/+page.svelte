@@ -188,7 +188,7 @@
 	}
 </script>
 
-<div class="shadow-soft container mt-12 rounded-xl bg-card p-12">
+<div class="shadow-soft container mt-6 max-w-[1200px] rounded-xl bg-card p-4 sm:mt-12 sm:p-12">
 	<h2 class="flex justify-center font-serif text-2xl">Nouvelle Recette</h2>
 	<div>
 		<div class={styles.metadata}>
@@ -201,7 +201,7 @@
 					<label class="mb-2 block" for="recipe-legend">Legende de la recette : </label>
 					<textarea class="input-base" id="recipe-legend" bind:value={form.legend}></textarea>
 				</div>
-				<div class="grid grid-cols-2 gap-8">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8">
 					<div>
 						<label class="mb-2 block" for="recipe-category">Categorie </label>
 						<select id="recipe-category" class="input-base" bind:value={form.category}>
@@ -219,7 +219,7 @@
 						<input class="input-base" id="recipe-author" type="text" bind:value={form.author} />
 					</div>
 				</div>
-				<div class="grid grid-cols-3 gap-8">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-8">
 					<div class="items-center gap-4">
 						<label class="mb-2 block" for="prep-time">Temps de préparation : </label>
 						<div class="flex gap-4">
@@ -239,7 +239,7 @@
 					</div>
 					<div>
 						<div class={styles.veganToggles}>
-							<div class="my-4 flex flex-col gap-4">
+							<div class="my-4 flex flex-row justify-center gap-6 sm:flex-col sm:justify-start sm:gap-4">
 								<div class="flex items-center">
 									<div class={styles.toggleLabel}>Végétarien</div>
 									<div class="relative inline-block h-5 w-11">
@@ -281,9 +281,11 @@
 			</div>
 			<div class="mt-6">
 				{#if base64RawImage}
-					<div class="grid grid-cols-2 gap-8">
+					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8">
 						<div class="flex flex-col gap-4">
-							<div class="relative h-[300px] w-[300px] overflow-hidden rounded-lg">
+							<div
+								class="relative h-[220px] w-full overflow-hidden rounded-lg sm:h-[300px] sm:w-[300px]"
+							>
 								<Cropper
 									image={base64RawImage}
 									bind:crop
@@ -295,7 +297,7 @@
 								/>
 							</div>
 						</div>
-						<div class="flex flex-col justify-center gap-8">
+						<div class="flex flex-col justify-center gap-4 sm:gap-8">
 							<button
 								class="h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
 								onclick={saveimage}>Selectionner la zone</button

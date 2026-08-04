@@ -17,7 +17,7 @@ export type Recipe = {
     timeUnit?: string;
     vegetarian?: boolean;
     vegan?: boolean;
-    notes?: string;
+    notes?: string[];
     category?: string;
 }
 

@@ -1,6 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import { getMongoDatabase } from "$lib/server/mongo/client";
 import { ObjectId, Binary, MongoServerError } from "mongodb";
+import type { Recipe } from "$lib/types/recipe";
 
 const VALID_CATEGORIES = ["Plat", "Dessert", "Apéro", "Soupe", "Sauce", "Salade", "Cocktail"];
 
@@ -9,30 +10,7 @@ function toNonNegativeNumber(value: FormDataEntryValue | null): number {
   return Number.isFinite(n) && n >= 0 ? n : 0;
 }
 
-export type SanitizedRecipe = {
-  title: string;
-  ingredients: string[];
-  instructions: string[];
-  description?: string;
-  image?: {
-    data: Binary;
-    contentType: string;
-    filename: string;
-    size: number;
-  };
-  tags?: string[];
-  slug: string;
-  legend?: string;
-  author?: string;
-  servings?: number;
-  cooktime?: number;
-  timeUnit?: string;
-  vegetarian?: boolean;
-  vegan?: boolean;
-  notes?: string[];
-  category?: string;
-  updatedAt?: Date;
-};
+export type SanitizedRecipe = Omit<Recipe, "_id">;
 
 export async function POST(event) {
 
@@ -43,7 +21,7 @@ export async function POST(event) {
     throw error(401, "Unauthorized");
   }
 
-  const db = await getMongoDatabase('sauciety')
+  const db = await getMongoDatabase()
 
   const collection = db.collection("recipes");
 

@@ -1,25 +1,9 @@
 import { getMongoDatabase } from "$lib/server/mongo/client"
-
-export type Recipe = {
-    author: string;
-    vegan: boolean;
-    vegetarian: boolean;
-    title: string;
-    slug: string;
-    legend: string;
-    cookTime: number;
-    servings: number;
-    _id: string;
-}
-
-export type RecipeCategory = {
-    _id: string;
-    items: Recipe[];
-}
+import type { RecipeCategory } from '$lib/types/recipe';
 
 export async function load() {
 
-    const db = await getMongoDatabase('sauciety')
+    const db = await getMongoDatabase()
 
     const collection = db.collection("recipes");
     const generalCollection = db.collection('general');
@@ -28,7 +12,7 @@ export async function load() {
             $group: {
                 _id: "$category", // Grouping by category
                 items: {
-                    $push: { author: "$author", vegan: "$vegan", vegetarian: "$vegetarian", title: "$title", slug: "$slug", legend: "$legend", cookTime: "$cooktime", servings: "$servings", _id: { $toString: "$_id" } } // Collecting title and slug for each document
+                    $push: { author: "$author", vegan: "$vegan", vegetarian: "$vegetarian", title: "$title", slug: "$slug", legend: "$legend", cooktime: "$cooktime", servings: "$servings", _id: { $toString: "$_id" } } // Collecting title and slug for each document
                 }
             }
         }

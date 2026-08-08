@@ -1,4 +1,5 @@
 import { getMongoDatabase } from "$lib/server/mongo/client"
+import { requireSession } from "$lib/server/auth";
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Recipe, RecipeClient } from '$lib/types/recipe';
@@ -6,22 +7,15 @@ import type { Recipe, RecipeClient } from '$lib/types/recipe';
 
 export const actions = {
 	delete: async (event) => {
-
-		const session = await event.locals.auth();
-
-		if (!session?.user) {
-			throw redirect(303, '/');
-		}
-
+		await requireSession(event);
 
 		const { params } = event;
 		const id = params.recipeID;
-		console.log('delete', id)
 		if (!id) {
 			throw error(400, 'Invalid recipe ID');
 		}
 
-		const db = await getMongoDatabase('sauciety');
+		const db = await getMongoDatabase();
 		const collection = db.collection('recipes');
 
 		await collection.deleteOne({ slug: id });
@@ -34,7 +28,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const { params } = event;
 
-	const db = await getMongoDatabase('sauciety')
+	const db = await getMongoDatabase()
 	const recipesCollection = db.collection<Recipe>('recipes');
 	const recipeSlug = params.recipeID;
 	const recipe = await recipesCollection.findOne({ slug: recipeSlug }, {

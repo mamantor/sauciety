@@ -1,6 +1,8 @@
 import { MongoClient, type Db } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
+const DB_NAME = 'sauciety';
+
 let clientPromise: Promise<MongoClient> | undefined;
 
 function getMongoClient() {
@@ -20,7 +22,7 @@ function getMongoClient() {
 
     clientPromise.then((connectedClient) => {
       connectedClient
-        .db('sauciety')
+        .db(DB_NAME)
         .collection('recipes')
         .createIndex({ slug: 1 }, { unique: true })
         .catch((err) => console.error('Failed to ensure recipes.slug unique index:', err));
@@ -30,7 +32,7 @@ function getMongoClient() {
   return clientPromise;
 }
 
-export async function getMongoDatabase(dbName?: string): Promise<Db> {
+export async function getMongoDatabase(dbName: string = DB_NAME): Promise<Db> {
   const client = await getMongoClient();
   return client.db(dbName);
 }

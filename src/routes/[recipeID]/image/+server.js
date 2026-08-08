@@ -1,7 +1,7 @@
 import { getMongoDatabase } from "$lib/server/mongo/client";
 
 export async function GET({ params }) {
-    const db = await getMongoDatabase('sauciety')
+    const db = await getMongoDatabase()
 
     const recipesCollection = db.collection("recipes");
     const recipe = await recipesCollection.findOne(

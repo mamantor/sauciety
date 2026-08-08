@@ -4,7 +4,7 @@
 	import styles from './page.module.scss';
 	import Cropper from 'svelte-easy-crop';
 	import { Trash } from 'svelte-heros';
-	import type { EditableRecipe } from './+page.server';
+	import type { RecipeClient } from '$lib/types/recipe';
 	import { resolve } from '$app/paths';
 
 	export let data;
@@ -45,7 +45,7 @@
 
 	let base64RawImage: string = '';
 
-	const withDefaults = (r: EditableRecipe | null) => ({
+	const withDefaults = (r: RecipeClient | null) => ({
 		...defaultValues,
 		...(r ?? {}),
 		// ensure array fields are never empty / undefined

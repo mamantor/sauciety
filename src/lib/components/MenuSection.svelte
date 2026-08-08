@@ -1,7 +1,8 @@
 <script lang="ts">
 	import MenuRecipeItem from '$lib/components/MenuRecipeItem.svelte';
+	import type { RecipeCategory } from '$lib/types/recipe';
 
-	let { category } = $props();
+	let { category }: { category: RecipeCategory } = $props();
 
 </script>
 

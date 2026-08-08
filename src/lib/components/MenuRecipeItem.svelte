@@ -2,8 +2,9 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Clock, Leaf, Sprout, Users } from '@lucide/svelte';
+	import type { RecipeSummary } from '$lib/types/recipe';
 
-	let { recipe, index } = $props();
+	let { recipe, index }: { recipe: RecipeSummary; index: number } = $props();
 </script>
 
 <article
@@ -52,7 +53,7 @@
 		<div class="flex shrink-0 flex-col items-end gap-1 text-xs text-muted-foreground">
 			<span class="flex items-center gap-1">
 				<Clock class="h-3 w-3" />
-				{recipe.cookTime} min
+				{recipe.cooktime} min
 			</span>
 			<span class="flex items-center gap-1">
 				<Users class="h-3 w-3" />

@@ -1,14 +1,17 @@
 
-import type { ObjectId } from 'mongodb';
+import type { ObjectId, Binary } from 'mongodb';
 
 export type Recipe = {
     _id: ObjectId;
     title: string;
     ingredients: string[];
     instructions: string[];
-    description?: string;
-    image?: string;
-    tags?: string[];
+    image?: {
+        data: Binary;
+        contentType: string;
+        filename: string;
+        size: number;
+    };
     slug: string;
     legend?: string;
     author?: string;
@@ -22,6 +25,19 @@ export type Recipe = {
     updatedAt?: Date;
 }
 
-export type RecipeClient = Omit<Recipe, '_id'> & {
+// image is never sent to the client: server routes always project it out
+// and serve it separately via /<slug>/image instead.
+export type RecipeClient = Omit<Recipe, '_id' | 'image'> & {
 	_id: string;
+};
+
+// The subset of fields the homepage's $group aggregation actually selects.
+export type RecipeSummary = Pick<
+	RecipeClient,
+	'author' | 'vegan' | 'vegetarian' | 'title' | 'slug' | 'legend' | 'cooktime' | 'servings' | '_id'
+>;
+
+export type RecipeCategory = {
+	_id: string;
+	items: RecipeSummary[];
 };

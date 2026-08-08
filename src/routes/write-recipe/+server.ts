@@ -31,6 +31,7 @@ export type SanitizedRecipe = {
   vegan?: boolean;
   notes?: string[];
   category?: string;
+  updatedAt?: Date;
 };
 
 export async function POST(event) {
@@ -77,6 +78,7 @@ export async function POST(event) {
       ingredients: Array.isArray(ingredients) ? ingredients.map(String) : [],
       instructions: Array.isArray(instructions) ? instructions.map(String) : [],
       notes: Array.isArray(notes) ? notes.map(String) : [],
+      updatedAt: new Date(),
     };
 
     const imageFile = data.get('image');

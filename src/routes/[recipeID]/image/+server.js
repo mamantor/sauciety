@@ -16,7 +16,7 @@ export async function GET({ params }) {
     return new Response(recipe.image.data.buffer, {
         headers: {
             'Content-Type': recipe.image.contentType,
-            'Cache-Control': 'public, max-age=31536000'
+            'Cache-Control': 'public, max-age=31536000, immutable'
         }
     });
 }

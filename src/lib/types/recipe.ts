@@ -19,6 +19,7 @@ export type Recipe = {
     vegan?: boolean;
     notes?: string[];
     category?: string;
+    updatedAt?: Date;
 }
 
 export type RecipeClient = Omit<Recipe, '_id'> & {

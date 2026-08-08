@@ -22,7 +22,7 @@
 		<div class="shadow-soft overflow-hidden rounded-xl bg-card">
 			<div class="aspect-video overflow-hidden md:aspect-21/9">
 				<img
-					src={`/${data.recipe.slug}/image`}
+					src={`/${data.recipe.slug}/image${data.recipe.updatedAt ? `?v=${new Date(data.recipe.updatedAt).getTime()}` : ''}`}
 					alt={data.recipe.title}
 					class="h-full w-full object-cover"
 				/>

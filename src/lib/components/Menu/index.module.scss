@@ -8,9 +8,28 @@
 	left: 10px;
 	width: 180px;
 	height: 150px;
-	transition: transform 0.3s ease;
 	transform-origin: top left;
 	cursor: pointer;
+
+	// Transitions are only enabled once mounted (see menu.svelte), so the
+	// very first style application — before the CSS has even loaded, since
+	// Vite's dev server injects it via JS after the initial paint — snaps
+	// straight to the closed state instead of visibly animating into it.
+	&.mounted {
+		transition: transform 0.3s ease;
+
+		&::after {
+			transition:
+				border-left 0.3s ease,
+				border-right 0.3s ease,
+				border-bottom 0.3s ease,
+				bottom 0.3s ease;
+		}
+
+		.menu {
+			transition: opacity 0.3s ease;
+		}
+	}
 
 	&:not(:hover):not(.open):not(:focus-within) {
 		transform: scale(0.4);
@@ -25,11 +44,6 @@
 		border-left: 90px solid #cc5933;
 		border-right: 91px solid #cc5933;
 		border-bottom: 50px solid transparent;
-		transition:
-			border-left 0.3s ease,
-			border-right 0.3s ease,
-			border-bottom 0.3s ease,
-			bottom 0.3s ease;
 	}
 
 	.menu {
@@ -38,7 +52,6 @@
 		list-style: none;
 		opacity: 0;
 		pointer-events: none;
-		transition: opacity 0.3s ease;
 
 		li {
 			a,

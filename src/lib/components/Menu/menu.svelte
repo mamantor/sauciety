@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { signIn } from '@auth/sveltekit/client';
 	import { resolve } from '$app/paths';
@@ -14,10 +15,21 @@
 	const isLoggedIn = $derived(Boolean(session?.user));
 
 	let open = $state(false);
+
+	// Only animate the open/close transform after mount. Without this, the
+	// very first style application (before the CSS is even loaded — Vite's
+	// dev server injects it via JS, after the initial paint) still has the
+	// transition active, so the ribbon visibly animates from its unstyled
+	// default down to the collapsed state on every load instead of just
+	// appearing closed.
+	let mounted = $state(false);
+	onMount(() => {
+		mounted = true;
+	});
 </script>
 
 <div
-	class="{styles.bookmarkMenu} {open ? styles.open : ''}"
+	class="{styles.bookmarkMenu} {open ? styles.open : ''} {mounted ? styles.mounted : ''}"
 	role="button"
 	tabindex="0"
 	aria-expanded={open}

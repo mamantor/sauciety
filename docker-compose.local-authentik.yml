@@ -131,7 +131,7 @@ services:
       AUTH_TRUST_HOST: "true"
       AUTH_URL: https://sauciety.localtest.me
       HOST_HEADER: x-forwarded-host
-      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
+      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/sauciety?authSource=admin
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
       ORIGIN: https://sauciety.localtest.me
       PROTOCOL_HEADER: x-forwarded-proto

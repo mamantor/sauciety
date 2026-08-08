@@ -15,7 +15,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/yourdb?authSource=admin
+      MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/sauciety?authSource=admin
     depends_on: [mongo]
     ports:
       - "3000:3000"

@@ -12,11 +12,5 @@ export default defineConfig({
 		  scopeBehaviour: 'local', // Use 'local' scope for CSS Modules
 		  generateScopedName: '[name]__[local]__[hash:base64:5]', // Optional: customize class name format
 		},
-		preprocessorOptions: {
-		  scss: {
-			// Include global SCSS variables or mixins if needed
-			additionalData: `@use '$lib/styles/global.scss';`,
-		  },
-		},
 	  },
 });

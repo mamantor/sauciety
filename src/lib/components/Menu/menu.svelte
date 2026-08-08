@@ -12,9 +12,16 @@
 
 	const session = $derived(page.data.session);
 	const isLoggedIn = $derived(Boolean(session?.user));
+
+	let open = $state(false);
 </script>
 
-<div class={styles.bookmarkMenu}>
+<div
+	class="{styles.bookmarkMenu} {open ? styles.open : ''}"
+	aria-expanded={open}
+	aria-label={open ? 'Fermer le menu' : 'Menu'}
+	onclick={() => (open = !open)}
+>
 	<ul class={styles.menu}>
 		{#each menuItems as item (item.href)}
 			{#if !item.protected || session?.user}

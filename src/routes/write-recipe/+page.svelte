@@ -18,6 +18,12 @@
 		{ value: 'Cocktail', label: '🍹 Cocktail' }
 	];
 
+	const timeUnitOptions = [
+		{ value: 'minutes', label: 'minutes' },
+		{ value: 'heures', label: 'heures' },
+		{ value: 'jours', label: 'jours' }
+	];
+
 	let { data } = $props();
 
 	const editRecipe = $derived(data.editRecipe);
@@ -233,11 +239,7 @@
 						<label class="mb-2 block" for="prep-time">Temps de préparation : </label>
 						<div class="flex gap-4">
 							<input id="prep-time" type="text" bind:value={form.cooktime} class="input-base" />
-							<select class="input-base" bind:value={form.timeUnit}>
-								<option value="minutes">minutes</option>
-								<option value="heures">heures</option>
-								<option value="jours">jours</option>
-							</select>
+							<Select options={timeUnitOptions} bind:value={form.timeUnit} />
 						</div>
 					</div>
 					<div>

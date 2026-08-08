@@ -2,7 +2,7 @@ import { json, error } from "@sveltejs/kit";
 import { getMongoDatabase } from "$lib/server/mongo/client";
 import { ObjectId, Binary, MongoServerError } from "mongodb";
 
-const VALID_CATEGORIES = ["Plat", "Dessert", "Apéro", "Soupe", "Salade", "Cocktail"];
+const VALID_CATEGORIES = ["Plat", "Dessert", "Apéro", "Soupe", "Sauce", "Salade", "Cocktail"];
 
 function toNonNegativeNumber(value: FormDataEntryValue | null): number {
   const n = Number(value ?? 0);

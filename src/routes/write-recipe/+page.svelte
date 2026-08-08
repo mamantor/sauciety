@@ -211,6 +211,7 @@
 							<option value="Dessert">🍰 Dessert</option>
 							<option value="Apéro">🍷 Apéro</option>
 							<option value="Soupe">🥣 Soupe</option>
+							<option value="Sauce">🥫 Sauce</option>
 							<option value="Salade">🥗 Salade</option>
 							<option value="Cocktail">🍹 Cocktail</option>
 						</select>

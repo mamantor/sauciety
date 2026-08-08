@@ -33,7 +33,7 @@ export async function load() {
             }
         }
     ]).toArray()
-    const tocOrder = ["meal", "desert"]
+    const tocOrder = ["Plat", "Dessert"]
 
     recipes.sort((a, b) => {
         // Get the index of each category in the custom order.

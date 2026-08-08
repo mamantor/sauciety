@@ -12,9 +12,9 @@
 				Sauciety
 			</h1>
 		</div>
-		<div class="mr-24 flex items-center gap-2">
+		<div class="mr-4 flex min-w-0 items-center gap-2 sm:mr-24">
 			{#if session?.user}
-				<p class="font-sans text-sm text-foreground">bonjour {session.user.name}</p>
+				<p class="truncate font-sans text-sm text-foreground">bonjour {session.user.name}</p>
 			{/if}
 		</div>
 	</div>

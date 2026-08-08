@@ -101,7 +101,7 @@ export async function POST(event) {
     }
     return json({ message: "Recipe added successfully", recipe: sanitizedData }, { status: 201 });
   } catch (error) {
-    console.log(error)
-    return json({ error }, { status: 500 });
+    console.error(error);
+    return json({ error: "Invalid request" }, { status: 500 });
   }
 }

@@ -2,6 +2,13 @@ import { json, error } from "@sveltejs/kit";
 import { getMongoDatabase } from "$lib/server/mongo/client";
 import { ObjectId, Binary } from "mongodb";
 
+const VALID_CATEGORIES = ["Plat", "Dessert", "Apéro", "Soupe", "Salade", "Cocktail"];
+
+function toNonNegativeNumber(value: FormDataEntryValue | null): number {
+  const n = Number(value ?? 0);
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
 export type SanitizedRecipe = {
   title: string;
   ingredients: string[];
@@ -55,14 +62,16 @@ export async function POST(event) {
       return json({ error: "Invalid data" }, { status: 400 });
     }
 
+    const category = String(data.get('category') ?? '');
+
     const sanitizedData: Partial<SanitizedRecipe> = {
-      category: String(data.get('category') ?? ''),
+      category: VALID_CATEGORIES.includes(category) ? category : '',
       title,
       legend: String(data.get('legend') ?? ''),
       author: String(data.get('author') ?? ''),
       timeUnit: String(data.get('timeUnit') ?? ''),
-      servings: Number(data.get('servings') ?? 0),
-      cooktime: Number(data.get('cooktime') ?? 0),
+      servings: toNonNegativeNumber(data.get('servings')),
+      cooktime: toNonNegativeNumber(data.get('cooktime')),
       vegetarian: data.get('vegetarian') === 'true',
       vegan: data.get('vegan') === 'true',
       ingredients: Array.isArray(ingredients) ? ingredients.map(String) : [],

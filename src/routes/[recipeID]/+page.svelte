@@ -47,7 +47,17 @@
 							>
 								<Pen class="h-4 w-4" />
 							</button>
-							<form method="POST" action="?/delete" use:enhance>
+							<form
+								method="POST"
+								action="?/delete"
+								use:enhance={({ cancel }) => {
+									if (
+										!confirm(`Supprimer "${data.recipe.title}" ? Cette action est irréversible.`)
+									) {
+										cancel();
+									}
+								}}
+							>
 								<button
 									type="submit"
 									class="shrink-0 text-muted-foreground hover:text-destructive"

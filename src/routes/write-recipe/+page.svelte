@@ -183,7 +183,8 @@
 			}
 			return;
 		} else {
-			alert('Error adding recipe.');
+			const result = await response.json().catch(() => null);
+			alert(result?.error ?? 'Error adding recipe.');
 		}
 	}
 </script>

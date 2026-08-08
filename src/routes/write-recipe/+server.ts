@@ -1,6 +1,6 @@
 import { json, error } from "@sveltejs/kit";
 import { getMongoDatabase } from "$lib/server/mongo/client";
-import { ObjectId, Binary } from "mongodb";
+import { ObjectId, Binary, MongoServerError } from "mongodb";
 
 const VALID_CATEGORIES = ["Plat", "Dessert", "Apéro", "Soupe", "Salade", "Cocktail"];
 
@@ -110,6 +110,12 @@ export async function POST(event) {
     }
     return json({ message: "Recipe added successfully", recipe: sanitizedData }, { status: 201 });
   } catch (error) {
+    if (error instanceof MongoServerError && error.code === 11000) {
+      return json(
+        { error: "Une recette avec un titre très similaire existe déjà." },
+        { status: 409 }
+      );
+    }
     console.error(error);
     return json({ error: "Invalid request" }, { status: 500 });
   }

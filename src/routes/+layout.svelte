@@ -1,7 +1,3 @@
-<svelte:head>
-	<title>Turbo Tonio Sauciety</title>
-</svelte:head>
-
 <script lang="ts">
 	import '../app.css';
 	import Menu from '$lib/components/Menu/menu.svelte';
@@ -13,6 +9,10 @@
 		// TODO scroll to top
 	});
 </script>
+
+<svelte:head>
+	<title>Turbo Tonio Sauciety</title>
+</svelte:head>
 
 <div>
 	<Menu />

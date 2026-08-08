@@ -241,7 +241,9 @@
 					</div>
 					<div>
 						<div class={styles.veganToggles}>
-							<div class="my-4 flex flex-row justify-center gap-6 sm:flex-col sm:justify-start sm:gap-4">
+							<div
+								class="my-4 flex flex-row justify-center gap-6 sm:flex-col sm:justify-start sm:gap-4"
+							>
 								<div class="flex items-center">
 									<div class={styles.toggleLabel}>Végétarien</div>
 									<div class="relative inline-block h-5 w-11">

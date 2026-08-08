@@ -1,9 +1,9 @@
 <script>
-  import logo from '$lib/assets/logos/logo_turbotonio_car_3.svg';
+	import logo from '$lib/assets/logos/logo_turbotonio_car_3.svg';
 </script>
 
 <div class="logo-container">
-  <img class="logo" src={logo} alt="TurboTonio Logo" />
+	<img class="logo" src={logo} alt="TurboTonio Logo" />
 </div>
 
 <style>

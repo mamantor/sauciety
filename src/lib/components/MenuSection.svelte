@@ -3,7 +3,6 @@
 	import type { RecipeCategory } from '$lib/types/recipe';
 
 	let { category }: { category: RecipeCategory } = $props();
-
 </script>
 
 <section class="mb-8 last:mb-0">

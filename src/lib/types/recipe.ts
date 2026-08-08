@@ -1,29 +1,28 @@
-
 import type { ObjectId, Binary } from 'mongodb';
 
 export type Recipe = {
-    _id: ObjectId;
-    title: string;
-    ingredients: string[];
-    instructions: string[];
-    image?: {
-        data: Binary;
-        contentType: string;
-        filename: string;
-        size: number;
-    };
-    slug: string;
-    legend?: string;
-    author?: string;
-    servings?: number;
-    cooktime?: number;
-    timeUnit?: string;
-    vegetarian?: boolean;
-    vegan?: boolean;
-    notes?: string[];
-    category?: string;
-    updatedAt?: Date;
-}
+	_id: ObjectId;
+	title: string;
+	ingredients: string[];
+	instructions: string[];
+	image?: {
+		data: Binary;
+		contentType: string;
+		filename: string;
+		size: number;
+	};
+	slug: string;
+	legend?: string;
+	author?: string;
+	servings?: number;
+	cooktime?: number;
+	timeUnit?: string;
+	vegetarian?: boolean;
+	vegan?: boolean;
+	notes?: string[];
+	category?: string;
+	updatedAt?: Date;
+};
 
 // image is never sent to the client: server routes always project it out
 // and serve it separately via /<slug>/image instead.

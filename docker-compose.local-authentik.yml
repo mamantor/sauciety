@@ -1,5 +1,4 @@
 services:
-  
   traefik:
     image: traefik:v3.6.1
     command:
@@ -17,8 +16,8 @@ services:
       - --api.dashboard=true
       - --log.level=DEBUG
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
@@ -106,7 +105,6 @@ services:
   #     - traefik.http.services.whoami.loadbalancer.server.port=80
   #     - traefik.http.routers.whoami.tls=true
 
-
   # Your existing mongo (kept internal)
   mongo:
     image: mongo:4.4.18
@@ -118,7 +116,7 @@ services:
     networks:
       - internal
     ports:
-      - "27017:27017"
+      - '27017:27017'
 
   app:
     image: node:22-alpine
@@ -127,12 +125,12 @@ services:
     working_dir: /app
     command: sh -c "corepack enable && pnpm install --config.confirmModulesPurge=false && ORIGIN=https://sauciety.localtest.me PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host AUTH_URL=https://sauciety.localtest.me pnpm dev -- --host 0.0.0.0"
     environment:
-      AUTH_DEBUG: "true"
-      AUTH_TRUST_HOST: "true"
+      AUTH_DEBUG: 'true'
+      AUTH_TRUST_HOST: 'true'
       AUTH_URL: https://sauciety.localtest.me
       HOST_HEADER: x-forwarded-host
       MONGODB_URI: mongodb://root:${MONGO_ROOT_PASSWORD}@mongo:27017/sauciety?authSource=admin
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+      NODE_TLS_REJECT_UNAUTHORIZED: '0'
       ORIGIN: https://sauciety.localtest.me
       PROTOCOL_HEADER: x-forwarded-proto
     volumes:
@@ -153,8 +151,8 @@ services:
       - traefik.http.routers.sauciety.tls=true
       - traefik.http.services.sauciety.loadbalancer.server.port=5173
     extra_hosts:
-      - "auth.localtest.me:host-gateway"
-      - "sauciety.localtest.me:host-gateway"
+      - 'auth.localtest.me:host-gateway'
+      - 'sauciety.localtest.me:host-gateway'
 
 networks:
   proxy:

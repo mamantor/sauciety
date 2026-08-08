@@ -1,55 +1,54 @@
 .section {
-    margin-top: 2.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+	margin-top: 2.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
 
-    &__data {
-        display: flex;
-        flex-direction: column;
-        gap: .2rem
-    }
+	&__data {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
 }
 
 .veganToggles {
-    input {
-        vertical-align: baseline;
-        background-position: -9px;
+	input {
+		vertical-align: baseline;
+		background-position: -9px;
 
-        &:focus {
-            border: none;
-            box-shadow: none;
-        }
-    }
+		&:focus {
+			border: none;
+			box-shadow: none;
+		}
+	}
 
-    label {
-        border: none;
-        font-size: 1.5rem;
-        top: -7px;
-    }
+	label {
+		border: none;
+		font-size: 1.5rem;
+		top: -7px;
+	}
 }
 
 .toggleLabel {
-    margin-right: 1rem;
-    font-size : 0.8rem
+	margin-right: 1rem;
+	font-size: 0.8rem;
 }
 
-
 .input_group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 10px;
 
-    @media (min-width: 640px) {
-        gap: 30px;
-    }
+	@media (min-width: 640px) {
+		gap: 30px;
+	}
 }
 
 .del_btn {
-    font-family: Montserrat, sans-serif;
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
+	font-family: Montserrat, sans-serif;
+	padding: 8px 12px;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
 }

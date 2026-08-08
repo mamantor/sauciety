@@ -8,9 +8,7 @@
 	<div class=" flex h-16 items-center justify-between">
 		<div class="ml-24 flex items-center gap-2">
 			<TurboTonioLogo />
-			<h1 class="font-serif text-xl font-medium text-foreground md:text-2xl">
-				Sauciety
-			</h1>
+			<h1 class="font-serif text-xl font-medium text-foreground md:text-2xl">Sauciety</h1>
 		</div>
 		<div class="mr-4 flex min-w-0 items-center gap-2 sm:mr-24">
 			{#if session?.user}

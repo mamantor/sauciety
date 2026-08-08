@@ -11,7 +11,11 @@ const config = {
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 		adapter: adapter(),
 		csrf: {
-			trustedOrigins: ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://sauciety.turbotonio.com']
+			trustedOrigins: [
+				'http://localhost:5173',
+				'http://127.0.0.1:5173',
+				'https://sauciety.turbotonio.com'
+			]
 		}
 	}
 };

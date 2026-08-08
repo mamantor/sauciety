@@ -33,7 +33,7 @@
 	<ul class={styles.menu}>
 		{#each menuItems as item (item.href)}
 			{#if !item.protected || session?.user}
-				<li><a class='text-foreground' href={resolve(item.href)}>{item.text}</a></li>
+				<li><a class="text-foreground" href={resolve(item.href)}>{item.text}</a></li>
 			{/if}
 		{/each}
 		{#if !isLoggedIn}

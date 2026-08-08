@@ -43,11 +43,16 @@
 							<button
 								onclick={() => goto(resolve(`/write-recipe?id=${data.recipe._id}`))}
 								class="shrink-0 text-muted-foreground hover:text-primary"
+								aria-label="Modifier la recette"
 							>
 								<Pen class="h-4 w-4" />
 							</button>
 							<form method="POST" action="?/delete" use:enhance>
-								<button type="submit" class="shrink-0 text-muted-foreground hover:text-destructive">
+								<button
+									type="submit"
+									class="shrink-0 text-muted-foreground hover:text-destructive"
+									aria-label="Supprimer la recette"
+								>
 									<Trash2 class="h-4 w-4" />
 								</button>
 							</form>

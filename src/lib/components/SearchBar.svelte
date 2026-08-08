@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import { Search } from '@lucide/svelte';
-	let { value = $bindable('') } = $props();
+	let { value = $bindable('') }: { value?: string } = $props();
 </script>
 
 <div class="relative">

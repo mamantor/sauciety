@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/state';
 	import TurboTonioLogo from './TurboTonioLogo.svelte';
 	const session = $derived(page.data.session);

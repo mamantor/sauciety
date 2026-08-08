@@ -7,9 +7,9 @@
 	import type { RecipeClient } from '$lib/types/recipe';
 	import { resolve } from '$app/paths';
 
-	export let data;
+	let { data } = $props();
 
-	const { editRecipe } = data;
+	const editRecipe = $derived(data.editRecipe);
 
 	type formType = {
 		author: string;
@@ -43,7 +43,7 @@
 		author: ''
 	};
 
-	let base64RawImage: string = '';
+	let base64RawImage: string = $state('');
 
 	const withDefaults = (r: RecipeClient | null) => ({
 		...defaultValues,
@@ -54,14 +54,14 @@
 		notes: r?.notes?.length ? r.notes : ['']
 	});
 
-	let form: formType = withDefaults(editRecipe);
+	let form: formType = $state(withDefaults(editRecipe));
 
 	let croppedImageBlob: Blob | null = null;
 
 	// Cropper state
 	let cropArea = { x: 0, y: 0, width: 0, height: 0 };
-	let crop = { x: 0, y: 0 };
-	let zoom = 1;
+	let crop = $state({ x: 0, y: 0 });
+	let zoom = $state(1);
 
 	// --- Ingredient/Instruction/Note handlers ---
 	function addIngredient() {
@@ -346,9 +346,10 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Ingredients</h3>
 		<div class={styles.section__data}>
-			{#each form.ingredients as ingredient, index (index)}
+			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -- only the index is used, binding goes through form.ingredients[index] -->
+			{#each form.ingredients as _ingredient, index (index)}
 				<div class={styles.input_group}>
-					<input bind:value={ingredient} class="input-base" />
+					<input bind:value={form.ingredients[index]} class="input-base" />
 					<button class={styles.del_btn} onclick={() => removeIngredient(index)}>
 						<Trash class="h-5 w-5" />
 					</button>
@@ -360,9 +361,10 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Instructions</h3>
 		<div class={styles.section__data}>
-			{#each form.instructions as instruction, index (index)}
+			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -- only the index is used, binding goes through form.instructions[index] -->
+			{#each form.instructions as _instruction, index (index)}
 				<div class={styles.input_group}>
-					<textarea bind:value={instruction} class="input-base"></textarea>
+					<textarea bind:value={form.instructions[index]} class="input-base"></textarea>
 					<button class={styles.del_btn} onclick={() => removeInstruction(index)}>
 						<Trash class="h-5 w-5" />
 					</button>
@@ -374,9 +376,10 @@
 	<div class={styles.section}>
 		<h3 class="font-serif text-2xl">Notes</h3>
 		<div class={styles.section__data}>
-			{#each form.notes as note, index (index)}
+			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -- only the index is used, binding goes through form.notes[index] -->
+			{#each form.notes as _note, index (index)}
 				<div class={styles.input_group}>
-					<textarea bind:value={note} class="input-base"></textarea>
+					<textarea bind:value={form.notes[index]} class="input-base"></textarea>
 					<button class={styles.del_btn} onclick={() => removeNote(index)}>
 						<Trash class="h-5 w-5" />
 					</button>

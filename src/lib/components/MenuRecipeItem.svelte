@@ -33,7 +33,7 @@
 						<Sprout class="h-3 w-3" />
 						VG
 					</span>
-				{:else if recipe.vegetarian && !recipe.vegan}
+				{:else if recipe.vegetarian}
 					<span
 						class="inline-flex items-center gap-0.5 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold"
 						title="Vegetarian"

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import logo from '$lib/assets/logos/logo_turbotonio_car_3.svg';
 </script>
 

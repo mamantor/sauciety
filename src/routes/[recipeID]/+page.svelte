@@ -6,7 +6,7 @@
 
 	let { data } = $props();
 
-	const session = data.session;
+	const session = $derived(data.session);
 </script>
 
 <main class="container py-6 pb-20">

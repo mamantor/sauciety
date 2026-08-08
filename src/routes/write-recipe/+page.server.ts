@@ -35,7 +35,7 @@ export const load : PageServerLoad = (async (event) => {
 
     const id = event.url.searchParams.get('id');
 
-    if (id) {
+    if (id && ObjectId.isValid(id)) {
         const db = await getMongoDatabase('sauciety')
         const recipesCollection = db.collection<recipeFromDB>('recipes');
         const recipe = await recipesCollection.findOne({ _id: new ObjectId(id) }, {

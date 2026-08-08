@@ -21,8 +21,8 @@
 			<span class="text-sm font-medium">Back to recipes</span>
 		</button>
 
-		<div class="shadow-soft overflow-hidden rounded-xl bg-card">
-			<div class="aspect-video overflow-hidden md:aspect-21/9">
+		<div class="shadow-soft rounded-xl bg-card">
+			<div class="aspect-video overflow-hidden rounded-t-xl md:aspect-21/9">
 				<img
 					src={`/${data.recipe.slug}/image${data.recipe.updatedAt ? `?v=${new Date(data.recipe.updatedAt).getTime()}` : ''}`}
 					alt={data.recipe.title}
@@ -61,9 +61,9 @@
 
 								{#if confirmingDelete}
 									<div
-										class="shadow-soft absolute right-0 top-full z-10 mt-2 w-64 rounded-lg border border-border bg-card p-4 text-left"
+										class="shadow-soft absolute right-0 top-full z-10 mt-2 w-max max-w-[calc(100vw-2.5rem)] rounded-lg border border-border bg-card p-4 text-left sm:max-w-xs"
 									>
-										<p class="text-sm text-foreground">
+										<p class="break-words text-sm text-foreground">
 											Supprimer « {data.recipe.title} » ?
 										</p>
 										<p class="mt-1 text-xs text-muted-foreground">Cette action est irréversible.</p>

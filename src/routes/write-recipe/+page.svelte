@@ -4,8 +4,19 @@
 	import styles from './page.module.scss';
 	import Cropper from 'svelte-easy-crop';
 	import { Trash } from 'svelte-heros';
+	import Select from '$lib/components/Select.svelte';
 	import type { RecipeClient } from '$lib/types/recipe';
 	import { resolve } from '$app/paths';
+
+	const categoryOptions = [
+		{ value: 'Plat', label: '🍽️ Plat' },
+		{ value: 'Dessert', label: '🍰 Dessert' },
+		{ value: 'Apéro', label: '🍷 Apéro' },
+		{ value: 'Soupe', label: '🥣 Soupe' },
+		{ value: 'Sauce', label: '🥫 Sauce' },
+		{ value: 'Salade', label: '🥗 Salade' },
+		{ value: 'Cocktail', label: '🍹 Cocktail' }
+	];
 
 	let { data } = $props();
 
@@ -205,16 +216,12 @@
 				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8">
 					<div>
 						<label class="mb-2 block" for="recipe-category">Categorie </label>
-						<select id="recipe-category" class="input-base" bind:value={form.category}>
-							<option value="">Choisir une catégorie</option>
-							<option value="Plat">🍽️ Plat</option>
-							<option value="Dessert">🍰 Dessert</option>
-							<option value="Apéro">🍷 Apéro</option>
-							<option value="Soupe">🥣 Soupe</option>
-							<option value="Sauce">🥫 Sauce</option>
-							<option value="Salade">🥗 Salade</option>
-							<option value="Cocktail">🍹 Cocktail</option>
-						</select>
+						<Select
+							id="recipe-category"
+							options={categoryOptions}
+							bind:value={form.category}
+							placeholder="Choisir une catégorie"
+						/>
 					</div>
 					<div>
 						<label class="mb-2 block" for="recipe-author">Auteur : </label>

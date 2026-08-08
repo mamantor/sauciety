@@ -4,20 +4,17 @@ import { env } from '$env/dynamic/private';
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
     callbacks: {
-        async signIn({ user, account, profile }) {
-            console.log("SIGNIN CALLBACK", { user, account, profile });
+        async signIn() {
             return true;
         },
 
-        async jwt({ token, account, profile }) {
-            console.log("JWT CALLBACK", { token, account, profile });
+        async jwt({ token, profile }) {
             if (profile) {
                 token.name = profile.nickname ?? profile.preferred_username ?? token.name;
             }
             return token;
         },
         async session({ session, token }) {
-            console.log(`session ${JSON.stringify(session)}, token ${JSON.stringify(token)}`);
             if (session.user) {
                 session.user.name = token.name;
                 // session.user.email = token.email;

@@ -131,7 +131,6 @@ services:
       PROTOCOL_HEADER: x-forwarded-proto
       HOST_HEADER: x-forwarded-host
 
-      AUTH_DEBUG: "true"
       AUTH_URL: "https://sauciety.turbotonio.com"
       AUTH_TRUST_HOST: "true"
       # AUTH_SECRET: ${AUTH_SECRET}

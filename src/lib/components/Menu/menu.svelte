@@ -18,9 +18,17 @@
 
 <div
 	class="{styles.bookmarkMenu} {open ? styles.open : ''}"
+	role="button"
+	tabindex="0"
 	aria-expanded={open}
 	aria-label={open ? 'Fermer le menu' : 'Menu'}
 	onclick={() => (open = !open)}
+	onkeydown={(e) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			open = !open;
+		}
+	}}
 >
 	<ul class={styles.menu}>
 		{#each menuItems as item (item.href)}

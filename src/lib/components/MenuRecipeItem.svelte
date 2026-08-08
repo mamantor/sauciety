@@ -14,7 +14,7 @@
 		class="flex items-start justify-between gap-4"
 		onclick={() => goto(resolve(`/${recipe.slug}`))}
 		role="link"
-		tabindex={index}
+		tabindex="0"
 		onkeypress={(e) => {
 			if (e.key === 'Enter') goto(resolve(`/${recipe.slug}`));
 		}}

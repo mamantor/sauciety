@@ -6,7 +6,6 @@ export async function load() {
     const db = await getMongoDatabase()
 
     const collection = db.collection("recipes");
-    const generalCollection = db.collection('general');
     const recipes = await collection.aggregate<RecipeCategory>([
         {
             $group: {
@@ -26,11 +25,7 @@ export async function load() {
         const indexB = tocOrder.indexOf(b._id) !== -1 ? tocOrder.indexOf(b._id) : Number.MAX_VALUE;
         return indexA - indexB;
     });
-    const general = await generalCollection.findOne({}, { projection: { _id: 0, bookName: 1 } });
-
-
     return {
-        recipes,
-        general
+        recipes
     }
 };

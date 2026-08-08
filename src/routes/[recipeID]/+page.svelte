@@ -7,6 +7,8 @@
 	let { data } = $props();
 
 	const session = $derived(data.session);
+
+	let confirmingDelete = $state(false);
 </script>
 
 <main class="container py-6 pb-20">
@@ -47,25 +49,44 @@
 							>
 								<Pen class="h-4 w-4" />
 							</button>
-							<form
-								method="POST"
-								action="?/delete"
-								use:enhance={({ cancel }) => {
-									if (
-										!confirm(`Supprimer "${data.recipe.title}" ? Cette action est irréversible.`)
-									) {
-										cancel();
-									}
-								}}
-							>
+							<div class="relative">
 								<button
-									type="submit"
+									type="button"
+									onclick={() => (confirmingDelete = true)}
 									class="shrink-0 text-muted-foreground hover:text-destructive"
 									aria-label="Supprimer la recette"
 								>
 									<Trash2 class="h-4 w-4" />
 								</button>
-							</form>
+
+								{#if confirmingDelete}
+									<div
+										class="shadow-soft absolute right-0 top-full z-10 mt-2 w-64 rounded-lg border border-border bg-card p-4 text-left"
+									>
+										<p class="text-sm text-foreground">
+											Supprimer « {data.recipe.title} » ?
+										</p>
+										<p class="mt-1 text-xs text-muted-foreground">Cette action est irréversible.</p>
+										<div class="mt-3 flex justify-end gap-2">
+											<button
+												type="button"
+												onclick={() => (confirmingDelete = false)}
+												class="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent/30"
+											>
+												Annuler
+											</button>
+											<form method="POST" action="?/delete" use:enhance>
+												<button
+													type="submit"
+													class="rounded-md bg-destructive px-3 py-1.5 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
+												>
+													Supprimer
+												</button>
+											</form>
+										</div>
+									</div>
+								{/if}
+							</div>
 						</div>
 					{/if}
 				</div>

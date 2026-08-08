@@ -192,7 +192,7 @@
 <div class="shadow-soft container mt-6 max-w-[1200px] rounded-xl bg-card p-4 sm:mt-12 sm:p-12">
 	<h2 class="flex justify-center font-serif text-2xl">Nouvelle Recette</h2>
 	<div>
-		<div class={styles.metadata}>
+		<div>
 			<div class="flex flex-col gap-6">
 				<div>
 					<label class="mb-2 block" for="recipe-name">Nom de la recette : </label>

@@ -1,14 +1,5 @@
 @tailwind base;
 
-.title {
-    font-family: Raleway, sans-serif;
-    margin: auto;
-    font-size: 2.5rem;
-    display: flex;
-    justify-content: center;
-    font-weight: 500
-}
-
 .section {
     margin-top: 2.5rem;
     display: flex;
@@ -20,30 +11,7 @@
         flex-direction: column;
         gap: .2rem
     }
-
-    &__title {
-        font-family: Raleway, sans-serif;
-        font-size: 1.5rem;
-        font-weight: 500
-    }
 }
-
-.form_container {
-    margin-top: 3.8rem;
-    max-width: 1200px;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.cropper {
-    &__container {
-        position: relative;
-        width: 300px;
-        height: 300px
-    }
-}
-
-
 
 .veganToggles {
     input {

@@ -40,3 +40,16 @@ export type RecipeCategory = {
 	_id: string;
 	items: RecipeSummary[];
 };
+
+export type Comment = {
+	_id: ObjectId;
+	recipeSlug: string;
+	author: string;
+	text: string;
+	createdAt: Date;
+};
+
+export type CommentClient = Omit<Comment, '_id' | 'createdAt'> & {
+	_id: string;
+	createdAt: string;
+};

@@ -21,11 +21,13 @@ function getMongoClient() {
 		});
 
 		clientPromise.then((connectedClient) => {
-			connectedClient
-				.db(DB_NAME)
-				.collection('recipes')
+			const db = connectedClient.db(DB_NAME);
+			db.collection('recipes')
 				.createIndex({ slug: 1 }, { unique: true })
 				.catch((err) => console.error('Failed to ensure recipes.slug unique index:', err));
+			db.collection('comments')
+				.createIndex({ recipeSlug: 1 })
+				.catch((err) => console.error('Failed to ensure comments.recipeSlug index:', err));
 		});
 	}
 

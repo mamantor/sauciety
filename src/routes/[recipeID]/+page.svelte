@@ -4,11 +4,21 @@
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 
-	let { data } = $props();
+	let { data, form } = $props();
 
 	const session = $derived(data.session);
 
 	let confirmingDelete = $state(false);
+
+	function formatCommentDate(iso: string) {
+		return new Date(iso).toLocaleString('fr-FR', {
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	}
 </script>
 
 <main class="container py-6 pb-20">
@@ -130,6 +140,48 @@
 							{/each}
 						</ol>
 					</div>
+				</div>
+
+				<div class="mt-8">
+					<h2 class="mb-4 font-serif text-xl text-foreground">Commentaires</h2>
+
+					{#if data.comments.length > 0}
+						<ul class="space-y-3">
+							{#each data.comments as comment (comment._id)}
+								<li class="rounded-lg border border-border bg-background p-4">
+									<div class="flex items-baseline justify-between gap-2">
+										<span class="text-sm font-medium text-foreground">{comment.author}</span>
+										<span class="text-xs text-muted-foreground">
+											{formatCommentDate(comment.createdAt)}
+										</span>
+									</div>
+									<p class="mt-1 whitespace-pre-wrap text-sm text-foreground">{comment.text}</p>
+								</li>
+							{/each}
+						</ul>
+					{:else}
+						<p class="text-sm text-muted-foreground">Aucun commentaire pour le moment.</p>
+					{/if}
+
+					{#if session?.user}
+						<form method="POST" action="?/comment" use:enhance class="mt-4">
+							<textarea
+								name="text"
+								required
+								maxlength="2000"
+								rows="3"
+								placeholder="Ajouter un commentaire..."
+								class="input-base resize-none"></textarea>
+							{#if form?.message}
+								<p class="mt-1 text-sm text-destructive">{form.message}</p>
+							{/if}
+							<button type="submit" class="button-base mt-2">Publier</button>
+						</form>
+					{:else}
+						<p class="mt-4 text-sm text-muted-foreground">
+							Connectez-vous pour laisser un commentaire.
+						</p>
+					{/if}
 				</div>
 
 				{#if data.recipe.notes?.length}

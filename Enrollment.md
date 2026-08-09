@@ -13,25 +13,46 @@ supports everything below.
 
 Right now neither `docker-compose.prod.yml` nor `docker-compose.local-authentik.yml`
 configure SMTP, so Authentik can't send anything yet — you'd have to copy the invite
-link manually. To let it send the email for you, add these environment variables to
-the `authentik-server` (and `authentik-worker`) services in `docker-compose.prod.yml`:
+link manually.
+
+**Yes, your Proton subscription can do this** — Proton has a feature called
+[SMTP submission](https://proton.me/support/smtp-submission) that's built exactly for
+this case (apps/servers sending mail programmatically), separate from Proton Mail
+Bridge (which is only for desktop mail clients like Outlook and doesn't apply here).
+It's included on all paid Proton plans that have a custom domain attached.
+
+**One-time setup on the Proton side:**
+
+1. If you haven't already, add `turbotonio.com` as a custom domain in Proton
+   (**Settings → Go to settings → Domain names**) and verify it via the DNS records
+   Proton gives you, then create an address on it to send from, e.g.
+   `authentik@turbotonio.com`.
+2. **Settings → All settings → Proton Mail → IMAP/SMTP → SMTP tokens → Generate token.**
+   Name it something like `authentik-sauciety`, pick the `authentik@turbotonio.com`
+   address, confirm with your account password. The token is shown once — copy it
+   somewhere safe (it's not your Proton password, and there's no way to view it again
+   later, only revoke and regenerate).
+
+**Then on the Sauciety side**, add these environment variables to the
+`authentik-server` (and `authentik-worker`) services in `docker-compose.prod.yml`:
 
 ```yaml
 environment:
-  AUTHENTIK_EMAIL__HOST: smtp.your-provider.com
+  AUTHENTIK_EMAIL__HOST: smtp.protonmail.ch
   AUTHENTIK_EMAIL__PORT: '587'
-  AUTHENTIK_EMAIL__USERNAME: your-smtp-username
-  AUTHENTIK_EMAIL__PASSWORD: your-smtp-password
+  AUTHENTIK_EMAIL__USERNAME: authentik@turbotonio.com
+  AUTHENTIK_EMAIL__PASSWORD: ${AUTHENTIK_SMTP_TOKEN}
   AUTHENTIK_EMAIL__USE_TLS: 'true'
   AUTHENTIK_EMAIL__USE_SSL: 'false'
   AUTHENTIK_EMAIL__FROM: authentik@turbotonio.com
 ```
 
-Put the password in `.env.prod` and reference it as `${AUTHENTIK_SMTP_PASSWORD}` rather
-than hardcoding it, same pattern as `MONGO_ROOT_PASSWORD`. Any SMTP provider works
-(Gmail's `smtp-relay.gmail.com:587`, Mailgun, your domain registrar's mail, etc.) — pick
-whichever you already have credentials for. Redeploy after adding these; no data is
+Put the SMTP token in `.env.prod` as `AUTHENTIK_SMTP_TOKEN=...`, same pattern as
+`MONGO_ROOT_PASSWORD` — never commit it. Redeploy after adding these; no data is
 affected, it only adds the ability to send mail.
+
+(Any other SMTP provider works the same way if you'd rather not use Proton for this —
+Gmail's `smtp-relay.gmail.com:587`, Mailgun, etc. — just swap the host/username/token.)
 
 If you'd rather not deal with SMTP right now, you can skip this section entirely and
 just copy the invite link Authentik generates, then send it yourself however you like
@@ -100,3 +121,5 @@ already just trusts whatever Authentik/Traefik hands it via `event.locals.auth()
 - [Invitations | authentik docs](https://docs.goauthentik.io/users-sources/user/invitations/)
 - [Invitation stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/invitation/)
 - [Email configuration | authentik docs](https://docs.goauthentik.io/install-config/email/)
+- [SMTP submission | Proton support](https://proton.me/support/smtp-submission)
+- [Custom domain with Proton Mail | Proton support](https://proton.me/support/custom-domain)

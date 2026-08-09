@@ -142,6 +142,19 @@
 					</div>
 				</div>
 
+				{#if data.recipe.notes?.length}
+					<div class="mt-8">
+						<h2 class="mb-4 font-serif text-xl text-foreground">Notes</h2>
+						<ul class="space-y-2">
+							{#each data.recipe.notes as note, index (index)}
+								<li class="text-sm italic text-foreground">
+									{note}
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
+
 				<div class="mt-8">
 					<h2 class="mb-4 font-serif text-xl text-foreground">Commentaires</h2>
 
@@ -183,19 +196,6 @@
 						</p>
 					{/if}
 				</div>
-
-				{#if data.recipe.notes?.length}
-					<div class="mt-8">
-						<h2 class="mb-4 font-serif text-xl text-foreground">Notes</h2>
-						<ul class="space-y-2">
-							{#each data.recipe.notes as note, index (index)}
-								<li class="text-sm italic text-foreground">
-									{note}
-								</li>
-							{/each}
-						</ul>
-					</div>
-				{/if}
 			</div>
 		</div>
 	</div>

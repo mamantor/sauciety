@@ -149,15 +149,25 @@ then pick `sauciety-invite-enrollment` from step 1. Fill in:
   invitee has enrolled
 - **Custom attributes**: this is where the recipient's email actually gets attached to
   them. It's not linked to the "Send via Email" address you'll type in the next step —
-  those are two separate fields, so you're typing the same address twice. Enter (YAML):
+  those are two separate fields, so you're typing the same address twice.
+
+  On this version's UI, it's a key/value **widget** (separate Key and Value boxes per
+  entry, with an "add entry" button), not a raw text box — don't type
+  `{email: "..."}`-style syntax into it, that ends up as one giant literal key mapped
+  to nothing. Instead, add one entry with:
+  - **Key**: `email`
+  - **Value**: `cousin@example.com` (no quotes — it's a plain string box)
+
+  If you're on a version where it's a raw YAML/JSON text box instead, the equivalent
+  is just:
 
   ```yaml
   email: cousin@example.com
   ```
 
-  This fills the hidden `email` prompt field from step 1, and the User Write stage
-  picks it up as the new user's email automatically, since `email` is one of the field
-  keys it recognizes directly on the User model.
+  Either way, this fills the hidden `email` prompt field from step 1, and the User
+  Write stage picks it up as the new user's email automatically, since `email` is one
+  of the field keys it recognizes directly on the User model.
 
   Note this only sets it on the **Authentik** user record. Sauciety itself doesn't
   currently read email at all — `session.user.email` is deliberately left commented

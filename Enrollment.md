@@ -65,7 +65,7 @@ This is the sequence of screens the invited person will see: enter a nickname, p
 password, done. Authentik doesn't ship this pre-built for invitations, so it's built
 once, then reused for every future invite.
 
-In the admin interface: **Flows & Stages → Stages → Create**, create these four
+In the admin interface: **Flows & Stages → Stages → Create**, create these five
 (binding them to a flow is a separate step further down — creating a stage here just
 makes it exist, it won't do anything until it's bound):
 
@@ -74,13 +74,21 @@ makes it exist, it won't do anything until it's bound):
    leave it **unchecked**. If it's checked, anyone who finds the flow's URL can
    self-enroll without ever having a valid invite token; unchecked means the flow
    refuses to continue past this stage without one.
-2. **Prompt stage** — add the fields you want them to fill in: a text field for
-   `username` (or `name`, whatever you want displayed), and a password field for
-   `password` (with a password-confirm field alongside it). This is the actual form
-   they'll see. Also add one more field with key `email` and type **Hidden** — not
-   shown in the form, but this is what lets the invite's target address land on the
-   user record (see the invitation step below); leave it here even if you don't fill
-   it in on every invite.
+2. **Prompt stage** — this is the actual form they'll see, but the fields themselves
+   (confusingly, Authentik calls them "Prompts" too, distinct from the "Prompt stage"
+   that groups them) are separate objects, not something you type directly into the
+   stage. Create them first under **Flows & Stages → Prompts → Create**:
+   - A field with key `username` (or `name`), type **Text**
+   - A field with key `password`, type **Password**, plus a `password_repeat` field
+     of the same type for confirmation
+   - A field with key `email`, type **Hidden** — not shown in the form, but this is
+     what lets the invite's target address land on the user record (see the
+     invitation step below); create it even if you don't fill it in on every invite
+
+   Then open the **Prompt stage** itself, where you'll see a dual list (Available /
+   Selected) rather than a place to type field details directly — that's expected,
+   just move the three fields you created above into "Selected".
+
 3. **User Write stage** — leave defaults. This is what actually creates the account
    from whatever the Prompt stage collected.
 4. **User Login stage** — optional, but recommended: logs them into Authentik right

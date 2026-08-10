@@ -1,0 +1,45 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1>
+      Bienvenue chez Sauciety !
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+          Vous êtes invité(e) à rejoindre {{ host }}, notre livre de recettes de famille.
+          Cliquez sur le bouton ci-dessous pour créer votre compte.
+        </td>
+      </tr>
+      {% if expires %}
+      <tr>
+        <td align="center" style="max-width: 300px; padding: 10px 0; color: #212124; font-size: 12px;">
+          Cette invitation expire {{ expires|naturaltime }}.
+        </td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td align="center" class="btn btn-primary" style="background-color: #cc5933; border-color: #cc5933;">
+          <a id="confirm" href="{{ url }}" rel="noopener noreferrer" target="_blank" style="color: #fff;">Rejoindre Sauciety</a>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+{% endblock %}
+
+{% block sub_content %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :
+    <br>
+    <a href="{{ url }}" rel="noopener noreferrer" target="_blank">{{ url }}</a>
+  </td>
+</tr>
+{% endblock %}

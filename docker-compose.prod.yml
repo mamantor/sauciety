@@ -71,6 +71,8 @@ services:
       AUTHENTIK_EMAIL__USE_SSL: 'false'
       AUTHENTIK_EMAIL__FROM: tonio@turbotonio.com
     command: server
+    volumes:
+      - ./custom-templates:/templates
     depends_on:
       - authentik-db
       - authentik-redis
@@ -103,6 +105,8 @@ services:
       AUTHENTIK_EMAIL__USE_SSL: 'false'
       AUTHENTIK_EMAIL__FROM: tonio@turbotonio.com
     command: worker
+    volumes:
+      - ./custom-templates:/templates
     depends_on:
       - authentik-db
       - authentik-redis

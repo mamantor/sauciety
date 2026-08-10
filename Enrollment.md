@@ -80,21 +80,28 @@ makes it exist, it won't do anything until it's bound):
    they'll see.
 3. **User Write stage** — leave defaults. This is what actually creates the account
    from whatever the Prompt stage collected.
-4. **User Login stage** — optional, logs them straight into Sauciety right after
-   enrolling instead of making them log in separately.
+4. **User Login stage** — optional, but recommended: logs them into Authentik right
+   after enrolling instead of making them log in separately. Combined with the
+   Redirect stage below, this means they land on Sauciety already authenticated —
+   no separate login step at all.
+5. **Redirect stage** — sends their browser to Sauciety once everything above is
+   done. Set **Static target** to `https://sauciety.turbotonio.com/` (any other value
+   than the special `ak-flow://...` format runs it in "static" mode, i.e. a fixed
+   URL rather than handing off to another flow, which is what you want here).
 
 Then **Flows & Stages → Flows → Create**:
 
 - Name: e.g. `sauciety-invite-enrollment`
 - Designation: **Enrollment**
-- Once created, open it and go to its **Stage Bindings** tab, and bind the four stages
-  you just created. Each binding asks for an **Order** — this is what actually
-  determines the sequence (Authentik runs bindings lowest-first), so don't leave them
-  all at `0`, give each one a distinct increasing number:
+- Once created, open it and go to its **Stage Bindings** tab, and bind the five
+  stages you just created. Each binding asks for an **Order** — this is what
+  actually determines the sequence (Authentik runs bindings lowest-first), so don't
+  leave them all at `0`, give each one a distinct increasing number:
   1. Your Invitation stage — order `10`
   2. Your Prompt stage — order `20`
   3. Your User Write stage — order `30`
   4. Your User Login stage (if you added it) — order `40`
+  5. Your Redirect stage — order `50`
 
 **Don't attach any policies to these bindings.** Each stage binding has its own
 **Policy / Group / User Bindings** sub-tab, and Authentik's policy picker there lists
@@ -159,10 +166,12 @@ already has access the moment they finish — no separate step per invite.
 ## What they experience
 
 They open the link, land on your Prompt stage, type in a nickname and password, and
-their Authentik account exists. Next time they hit `sauciety.turbotonio.com` and sign
-in via the existing "Connexion" button, Authentik/Traefik's forward-auth recognizes
-them like any other user — nothing on the Sauciety side needs to change, since it
-already just trusts whatever Authentik/Traefik hands it via `event.locals.auth()`.
+their Authentik account exists — already in the `sauciety-users` group if you set up
+step 4b. With the User Login + Redirect stages from step 1, that's the whole thing:
+they never see a separate login screen, the flow logs them into Authentik and drops
+them straight onto `sauciety.turbotonio.com`, already recognized by Authentik/Traefik's
+forward-auth. Nothing on the Sauciety side needs to change — it already just trusts
+whatever Authentik/Traefik hands it via `event.locals.auth()`.
 
 ## Sources
 
@@ -173,3 +182,4 @@ already just trusts whatever Authentik/Traefik hands it via `event.locals.auth()
 - [Custom domain with Proton Mail | Proton support](https://proton.me/support/custom-domain)
 - [Manage applications | authentik docs](https://docs.goauthentik.io/add-secure-apps/applications/manage_apps/)
 - [User write stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_write/)
+- [Redirect stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/redirect/)

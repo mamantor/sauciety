@@ -63,6 +63,8 @@ services:
       AUTHENTIK_INSECURE: 'false'
       # Public URL for redirects (local HTTP is fine for testing)
       AUTHENTIK_HOST: https://auth.turbotonio.com
+      AUTHENTIK_STORAGE__BACKEND: file
+      AUTHENTIK_STORAGE__MEDIA__BACKEND: file
       AUTHENTIK_EMAIL__HOST: smtp.protonmail.ch
       AUTHENTIK_EMAIL__PORT: '587'
       AUTHENTIK_EMAIL__USERNAME: tonio@turbotonio.com
@@ -73,6 +75,7 @@ services:
     command: server
     volumes:
       - ./custom-templates:/templates
+      - ./custom-data:/data
     depends_on:
       - authentik-db
       - authentik-redis

@@ -126,6 +126,36 @@ Without step 0, copy the generated invite URL instead (looks like
 `https://auth.turbotonio.com/if/flow/sauciety-invite-enrollment/?itoken=...`) and send
 it to them yourself.
 
+## 4. Give them access to Sauciety
+
+**Group, not a custom stage.** Don't try to make the flow add users "to the app"
+directly — there's no such thing as a generic stage for that, and reaching for one
+would mean writing a custom expression policy for something Authentik already has a
+clean, built-in path for: a group the application is bound to, plus a setting on the
+User Write stage you already have to auto-add new enrollees to that group. Two
+one-time pieces:
+
+**a. Create a group and bind it to the Sauciety application**
+
+1. **Directory → Groups → Create.** Name it something like `sauciety-users`.
+2. **Applications → Applications**, open your Sauciety application, go to its
+   **Policy / Group / User Bindings** tab, **Create or bind... → Bind a group**, pick
+   `sauciety-users`.
+
+   Worth knowing before you do this: **by default, an application with zero bindings
+   is open to every Authentik user, not just people you've explicitly granted
+   access.** If you've never touched this tab for Sauciety, anyone who's ever
+   authenticated against this Authentik instance — for anything, not just
+   Sauciety — currently has access to your recipes. Binding the group above is what
+   actually makes access meaningful, not just an organizational nicety.
+
+**b. Auto-add new enrollees to that group**
+
+Open your `sauciety-invite-enrollment` flow's Stage Bindings, click into the **User
+Write stage** binding, and set its **Create users group** field to `sauciety-users`.
+From then on, anyone who completes this enrollment flow is automatically a member and
+already has access the moment they finish — no separate step per invite.
+
 ## What they experience
 
 They open the link, land on your Prompt stage, type in a nickname and password, and
@@ -141,3 +171,5 @@ already just trusts whatever Authentik/Traefik hands it via `event.locals.auth()
 - [Email configuration | authentik docs](https://docs.goauthentik.io/install-config/email/)
 - [SMTP submission | Proton support](https://proton.me/support/smtp-submission)
 - [Custom domain with Proton Mail | Proton support](https://proton.me/support/custom-domain)
+- [Manage applications | authentik docs](https://docs.goauthentik.io/add-secure-apps/applications/manage_apps/)
+- [User write stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_write/)

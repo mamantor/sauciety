@@ -65,25 +65,31 @@ This is the sequence of screens the invited person will see: enter a nickname, p
 password, done. Authentik doesn't ship this pre-built for invitations, so it's built
 once, then reused for every future invite.
 
-In the admin interface: **Flows & Stages → Stages → Create**, create these three:
+In the admin interface: **Flows & Stages → Stages → Create**, create these four
+(binding them to a flow is a separate step further down — creating a stage here just
+makes it exist, it won't do anything until it's bound):
 
-1. **Prompt stage** — add the fields you want them to fill in: a text field for
+1. **Invitation stage** — this is what makes the flow invite-only. The important
+   setting is right on this creation form: **"Continue flow without invitation"** —
+   leave it **unchecked**. If it's checked, anyone who finds the flow's URL can
+   self-enroll without ever having a valid invite token; unchecked means the flow
+   refuses to continue past this stage without one.
+2. **Prompt stage** — add the fields you want them to fill in: a text field for
    `username` (or `name`, whatever you want displayed), and a password field for
    `password` (with a password-confirm field alongside it). This is the actual form
    they'll see.
-2. **User Write stage** — leave defaults. This is what actually creates the account
+3. **User Write stage** — leave defaults. This is what actually creates the account
    from whatever the Prompt stage collected.
-3. **User Login stage** — optional, logs them straight into Sauciety right after
+4. **User Login stage** — optional, logs them straight into Sauciety right after
    enrolling instead of making them log in separately.
 
 Then **Flows & Stages → Flows → Create**:
 
 - Name: e.g. `sauciety-invite-enrollment`
 - Designation: **Enrollment**
-- Once created, open it and go to its **Stage Bindings** tab, and bind, in this order:
-  1. An **Invitation stage** first (this is what makes the flow invite-only — leave
-     "Continue flow without invitation" **unchecked**, otherwise anyone who finds the
-     URL could self-enroll without an invite)
+- Once created, open it and go to its **Stage Bindings** tab, and bind the four stages
+  you just created, in this order:
+  1. Your Invitation stage
   2. Your Prompt stage
   3. Your User Write stage
   4. Your User Login stage (if you added it)

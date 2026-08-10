@@ -81,13 +81,26 @@ makes it exist, it won't do anything until it's bound):
    - A field with key `username` (or `name`), type **Text**
    - A field with key `password`, type **Password**, plus a `password_repeat` field
      of the same type for confirmation
-   - A field with key `email`, type **Hidden** — not shown in the form, but this is
-     what lets the invite's target address land on the user record (see the
-     invitation step below); create it even if you don't fill it in on every invite
+   - A field with key `email` — not shown in the form, but this is what lets the
+     invite's target address land on the user record (see the invitation step
+     below); create it even if you don't fill it in on every invite. Concretely,
+     on this field's own creation form:
+     - **Field Key**: `email`
+     - **Label**: whatever, it won't be shown (e.g. `Email`)
+     - **Type**: select **Hidden** from the dropdown
+     - **Placeholder**: leave empty
 
    Then open the **Prompt stage** itself, where you'll see a dual list (Available /
    Selected) rather than a place to type field details directly — that's expected,
    just move the three fields you created above into "Selected".
+
+   Honest caveat on the Hidden field specifically: Authentik's own docs note that a
+   Hidden field normally takes its value from its **Placeholder**, and it's not fully
+   confirmed here that the invitation's `fixed_data.email` (next section) reliably
+   overrides that at runtime rather than just leaving it blank. Send yourself one
+   test invite with `email: you@example.com` in Custom attributes and check
+   **Directory → Users → (your test user)** afterward to confirm the email actually
+   landed before relying on this for real invites.
 
 3. **User Write stage** — leave defaults. This is what actually creates the account
    from whatever the Prompt stage collected.

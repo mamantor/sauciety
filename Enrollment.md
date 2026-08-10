@@ -151,18 +151,13 @@ then pick `sauciety-invite-enrollment` from step 1. Fill in:
   them. It's not linked to the "Send via Email" address you'll type in the next step —
   those are two separate fields, so you're typing the same address twice.
 
-  On this version's UI, it's a key/value **widget** (separate Key and Value boxes per
-  entry, with an "add entry" button), not a raw text box — don't type
-  `{email: "..."}`-style syntax into it, that ends up as one giant literal key mapped
-  to nothing. Instead, add one entry with:
-  - **Key**: `email`
-  - **Value**: `cousin@example.com` (no quotes — it's a plain string box)
+  It's a raw text box, but it needs to be **strict JSON with both the key and the
+  value quoted** — unquoted keys (`{email: "..."}`) or YAML-style block syntax
+  (`email: cousin@example.com`) don't parse and silently produce garbage instead of
+  an error. This is the form that actually works:
 
-  If you're on a version where it's a raw YAML/JSON text box instead, the equivalent
-  is just:
-
-  ```yaml
-  email: cousin@example.com
+  ```json
+  { "email": "cousin@example.com" }
   ```
 
   Either way, this fills the hidden `email` prompt field from step 1, and the User

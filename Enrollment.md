@@ -204,6 +204,22 @@ link — keep this one, it's the whole point), and `{{ expires }}` (paired with 
 `naturaltime` filter for "in 2 days" style phrasing). After editing, only the worker
 needs a restart to pick up the change — no rebuild.
 
+**The logo in the email is already the Sauciety "tt" icon too.** Separate from the
+template mount, `./custom-data:/data` is mounted on `authentik-server` and holds
+`media/public/branding/sauciety-logo.png`, set as the "Turbo Tonio" brand's Logo and
+Favicon (**System → Brands**). The template's `content`/`sub_content` blocks don't
+touch `logo_url` (inherited from `base.html`'s `{% block logo_url %}cid:logo{% endblock %}`),
+so the brand's current logo flows through to the email automatically — no template
+edit needed if you change the logo later, just re-set it on the Brand.
+
+If you ever need to redo the `/data` mount from scratch (e.g. on the Pi): the
+directory must be empty when `authentik-server` first starts against it, or the Files
+page (**Customization → Files**) fails with "Configured file backend does not support
+file management" — a known rough edge
+([goauthentik/authentik#19546](https://github.com/goauthentik/authentik/issues/19546)).
+Pre-populating `media/public/...` before first boot doesn't work around it; start
+empty, let Authentik create the structure, upload after.
+
 ## 5. Give them access to Sauciety
 
 **Group, not a custom stage.** Don't try to make the flow add users "to the app"
@@ -258,3 +274,7 @@ whatever Authentik/Traefik hands it via `event.locals.auth()`.
 - [Architecture | authentik docs](https://docs.goauthentik.io/core/architecture/)
 - [default invitation.html template | authentik source](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/invitation.html)
 - [default base.html email layout | authentik source](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/base.html)
+- [Files | authentik docs](https://docs.goauthentik.io/customize/files/)
+- [File picker values | authentik docs](https://docs.goauthentik.io/customize/file-picker/)
+- [Errors when uploading icons | authentik docs](https://docs.goauthentik.io/troubleshooting/image_upload/)
+- ["Configured file backend does not support file management" | authentik#19546](https://github.com/goauthentik/authentik/issues/19546)

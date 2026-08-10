@@ -73,6 +73,27 @@ Then, in a browser:
 - `https://auth.turbotonio.com` loads and you can log into the admin UI.
 - `https://sauciety.turbotonio.com` still requires login as before (forward-auth didn't get silently disabled) — this is the one thing worth actually checking by eye, since 2026.5 changed a default-access flag (`core_default_app_access`) that could theoretically affect this.
 - Directory → Invitations → New Invitation now shows the **Send via Email** step.
+- **Customization → Files** loads without the "Configured file backend does not
+  support file management" error, and shows `branding/sauciety-logo.png`.
+
+**If that Files error does show up**: this is a known Authentik rough edge
+([authentik#19546](https://github.com/goauthentik/authentik/issues/19546)) —
+`authentik-server` needs `custom-data/` to be genuinely empty the very first time it
+starts against the `/data` mount, but `custom-data/media/public/branding/sauciety-logo.png`
+comes along with `git pull` since it's committed, so prod's first boot won't start
+empty like local's test did. Fix:
+
+```bash
+docker compose -f docker-compose.prod.yml stop authentik-server
+mv custom-data/media/public/branding/sauciety-logo.png /tmp/sauciety-logo.png
+rm -rf custom-data/media
+docker compose -f docker-compose.prod.yml up -d authentik-server
+```
+
+Wait for it to report healthy, confirm the Files page now works, then re-add the logo
+via **Customization → Files → Upload File** (browse to `/tmp/sauciety-logo.png`,
+optionally rename to `branding/sauciety-logo`) and set it as the "Turbo Tonio" brand's
+Logo and Favicon under **System → Brands**.
 
 ## If something goes wrong: rollback
 

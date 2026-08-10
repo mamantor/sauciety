@@ -179,55 +179,30 @@ Without step 0, copy the generated invite URL instead (looks like
 `https://auth.turbotonio.com/if/flow/sauciety-invite-enrollment/?itoken=...`) and send
 it to them yourself.
 
-## 4. Customize the invite email (optional)
+## 4. The invite email is branded (already done)
 
-The "Invitation" template picked in step 3 is Authentik's generic built-in one — plain
-branding, generic wording. To make your own:
+`custom-templates/sauciety-invitation.html` exists in the repo — a Sauciety-branded
+version of Authentik's default invitation email (French wording, the ribbon's orange
+`#cc5933` on the accept button instead of the default blue). Both `authentik-server`
+and `authentik-worker` mount `./custom-templates:/templates` — the fixed container path
+Authentik reads custom templates from, no admin-UI upload option — in both
+`docker-compose.local-authentik.yml` and `docker-compose.prod.yml`. Verified on the
+local stack: it shows up as **"Custom Template: sauciety-invitation.html"** in the
+invitation's Send-via-Email template picker, alongside the built-in ones. Nothing extra
+to do on the Pi beyond the normal `git pull` + redeploy from `Migration.md` — the
+mount and the template file come along with it.
 
-**a. Mount a templates directory**
+**To actually use it**: when sending an invitation (step 3 above), the **Template**
+field defaults to the built-in "Invitation" — change it to
+**"Custom Template: sauciety-invitation.html"**.
 
-Authentik looks for custom email templates at the fixed container path `/templates`,
-which needs to be volume-mounted from somewhere on disk — there's no way to upload one
-through the admin UI. Add this to both `authentik-server` and `authentik-worker` in
-`docker-compose.prod.yml` (server needs it to list templates as selectable options in
-the UI, worker needs it to actually render and send the email):
-
-```yaml
-volumes:
-  - ./custom-templates:/templates
-```
-
-Then create `custom-templates/` next to `docker-compose.prod.yml` on the Pi, and
-redeploy (`docker compose -f docker-compose.prod.yml up -d`) so the mount takes effect.
-
-**b. Write the template**
-
-Don't start from scratch — copy Authentik's own default as a base:
-[`invitation.html`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/invitation.html)
-into `custom-templates/sauciety-invitation.html` and edit it. It's a Django template
-that extends the shared email layout:
-
-```django
-{% extends "email/base.html" %}
-{% block content %}
-  <!-- your content here -->
-{% endblock %}
-```
-
-The blocks worth knowing about (defined in
-[`base.html`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/base.html)):
-`content` (the main body) and `sub_content` (secondary text, e.g. the copyable-link
-fallback). The variables the invitation template has available: `{{ host }}` (your
-Authentik instance's name), `{{ url }}` (the accept-invite link — this is the part
-that actually matters, keep it), and `{{ expires }}` (used with Django's `naturaltime`
-filter for a human-readable "in 2 days" style expiration).
-
-**c. Select it**
-
-Once the worker's picked up the mount (a restart is enough, no rebuild needed), your
-template shows up as an extra option — alongside the built-in "Invitation" one — in
-the Email stage's **Template** field, and in the "Send via Email" step's template
-picker when creating future invitations.
+**To edit the wording further**: it's a Django template extending Authentik's shared
+email layout ([`base.html`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/base.html)),
+overriding two blocks — `content` (main body) and `sub_content` (the copyable-link
+fallback text). Available variables: `{{ host }}`, `{{ url }}` (the accept-invite
+link — keep this one, it's the whole point), and `{{ expires }}` (paired with Django's
+`naturaltime` filter for "in 2 days" style phrasing). After editing, only the worker
+needs a restart to pick up the change — no rebuild.
 
 ## 5. Give them access to Sauciety
 

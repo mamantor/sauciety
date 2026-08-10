@@ -88,11 +88,13 @@ Then **Flows & Stages → Flows → Create**:
 - Name: e.g. `sauciety-invite-enrollment`
 - Designation: **Enrollment**
 - Once created, open it and go to its **Stage Bindings** tab, and bind the four stages
-  you just created, in this order:
-  1. Your Invitation stage
-  2. Your Prompt stage
-  3. Your User Write stage
-  4. Your User Login stage (if you added it)
+  you just created. Each binding asks for an **Order** — this is what actually
+  determines the sequence (Authentik runs bindings lowest-first), so don't leave them
+  all at `0`, give each one a distinct increasing number:
+  1. Your Invitation stage — order `10`
+  2. Your Prompt stage — order `20`
+  3. Your User Write stage — order `30`
+  4. Your User Login stage (if you added it) — order `40`
 
 ## 2. Create the invitation
 

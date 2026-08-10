@@ -51,7 +51,7 @@ services:
       - proxy
 
   authentik-server:
-    image: ghcr.io/goauthentik/server:2025.12.4
+    image: ghcr.io/goauthentik/server:2026.5.6
     environment:
       AUTHENTIK_SECRET_KEY: ${AK_SECRET_KEY}
       AUTHENTIK_REDIS__HOST: authentik-redis
@@ -63,6 +63,13 @@ services:
       AUTHENTIK_INSECURE: 'false'
       # Public URL for redirects (local HTTP is fine for testing)
       AUTHENTIK_HOST: https://auth.turbotonio.com
+      AUTHENTIK_EMAIL__HOST: smtp.protonmail.ch
+      AUTHENTIK_EMAIL__PORT: '587'
+      AUTHENTIK_EMAIL__USERNAME: tonio@turbotonio.com
+      AUTHENTIK_EMAIL__PASSWORD: ${AUTHENTIK_SMTP_TOKEN}
+      AUTHENTIK_EMAIL__USE_TLS: 'true'
+      AUTHENTIK_EMAIL__USE_SSL: 'false'
+      AUTHENTIK_EMAIL__FROM: tonio@turbotonio.com
     command: server
     depends_on:
       - authentik-db
@@ -78,7 +85,7 @@ services:
       - traefik.http.services.authentik.loadbalancer.server.port=9000
 
   authentik-worker:
-    image: ghcr.io/goauthentik/server:2025.12.4
+    image: ghcr.io/goauthentik/server:2026.5.6
     environment:
       AUTHENTIK_SECRET_KEY: ${AK_SECRET_KEY}
       AUTHENTIK_REDIS__HOST: authentik-redis
@@ -88,6 +95,13 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: authentik
       AUTHENTIK_COOKIE_DOMAIN: turbotonio.com
       AUTHENTIK_HOST: https://auth.turbotonio.com
+      AUTHENTIK_EMAIL__HOST: smtp.protonmail.ch
+      AUTHENTIK_EMAIL__PORT: '587'
+      AUTHENTIK_EMAIL__USERNAME: tonio@turbotonio.com
+      AUTHENTIK_EMAIL__PASSWORD: ${AUTHENTIK_SMTP_TOKEN}
+      AUTHENTIK_EMAIL__USE_TLS: 'true'
+      AUTHENTIK_EMAIL__USE_SSL: 'false'
+      AUTHENTIK_EMAIL__FROM: tonio@turbotonio.com
     command: worker
     depends_on:
       - authentik-db

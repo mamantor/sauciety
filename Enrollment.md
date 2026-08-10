@@ -96,6 +96,16 @@ Then **Flows & Stages → Flows → Create**:
   3. Your User Write stage — order `30`
   4. Your User Login stage (if you added it) — order `40`
 
+**Don't attach any policies to these bindings.** Each stage binding has its own
+**Policy / Group / User Bindings** sub-tab, and Authentik's policy picker there lists
+its own internal system policies alongside yours (e.g. `default-oobe-prefill-user`,
+`default-oobe-check-username`). Despite the generic-sounding names, those are only
+meant for Authentik's own first-boot setup wizard (the one that creates `akadmin`) —
+they assume context that only exists during that specific bootstrap and will throw
+`KeyError: 'flow_plan'` or an `AnonymousUser has no attribute ...` error for anyone
+enrolling through this flow if attached here. Leave every binding's policy list empty;
+the Invitation stage alone is what gates the flow.
+
 ## 2. Create the invitation
 
 **Directory → Invitations → New Invitation → "with Existing Enrollment Flow..."**,

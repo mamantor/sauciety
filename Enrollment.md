@@ -179,7 +179,57 @@ Without step 0, copy the generated invite URL instead (looks like
 `https://auth.turbotonio.com/if/flow/sauciety-invite-enrollment/?itoken=...`) and send
 it to them yourself.
 
-## 4. Give them access to Sauciety
+## 4. Customize the invite email (optional)
+
+The "Invitation" template picked in step 3 is Authentik's generic built-in one — plain
+branding, generic wording. To make your own:
+
+**a. Mount a templates directory**
+
+Authentik looks for custom email templates at the fixed container path `/templates`,
+which needs to be volume-mounted from somewhere on disk — there's no way to upload one
+through the admin UI. Add this to both `authentik-server` and `authentik-worker` in
+`docker-compose.prod.yml` (server needs it to list templates as selectable options in
+the UI, worker needs it to actually render and send the email):
+
+```yaml
+volumes:
+  - ./custom-templates:/templates
+```
+
+Then create `custom-templates/` next to `docker-compose.prod.yml` on the Pi, and
+redeploy (`docker compose -f docker-compose.prod.yml up -d`) so the mount takes effect.
+
+**b. Write the template**
+
+Don't start from scratch — copy Authentik's own default as a base:
+[`invitation.html`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/invitation.html)
+into `custom-templates/sauciety-invitation.html` and edit it. It's a Django template
+that extends the shared email layout:
+
+```django
+{% extends "email/base.html" %}
+{% block content %}
+  <!-- your content here -->
+{% endblock %}
+```
+
+The blocks worth knowing about (defined in
+[`base.html`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/base.html)):
+`content` (the main body) and `sub_content` (secondary text, e.g. the copyable-link
+fallback). The variables the invitation template has available: `{{ host }}` (your
+Authentik instance's name), `{{ url }}` (the accept-invite link — this is the part
+that actually matters, keep it), and `{{ expires }}` (used with Django's `naturaltime`
+filter for a human-readable "in 2 days" style expiration).
+
+**c. Select it**
+
+Once the worker's picked up the mount (a restart is enough, no rebuild needed), your
+template shows up as an extra option — alongside the built-in "Invitation" one — in
+the Email stage's **Template** field, and in the "Send via Email" step's template
+picker when creating future invitations.
+
+## 5. Give them access to Sauciety
 
 **Group, not a custom stage.** Don't try to make the flow add users "to the app"
 directly — there's no such thing as a generic stage for that, and reaching for one
@@ -230,3 +280,6 @@ whatever Authentik/Traefik hands it via `event.locals.auth()`.
 - [User write stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_write/)
 - [Redirect stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/redirect/)
 - [Prompt stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/prompt/)
+- [Architecture | authentik docs](https://docs.goauthentik.io/core/architecture/)
+- [default invitation.html template | authentik source](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/invitation.html)
+- [default base.html email layout | authentik source](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/base.html)

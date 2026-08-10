@@ -77,7 +77,10 @@ makes it exist, it won't do anything until it's bound):
 2. **Prompt stage** — add the fields you want them to fill in: a text field for
    `username` (or `name`, whatever you want displayed), and a password field for
    `password` (with a password-confirm field alongside it). This is the actual form
-   they'll see.
+   they'll see. Also add one more field with key `email` and type **Hidden** — not
+   shown in the form, but this is what lets the invite's target address land on the
+   user record (see the invitation step below); leave it here even if you don't fill
+   it in on every invite.
 3. **User Write stage** — leave defaults. This is what actually creates the account
    from whatever the Prompt stage collected.
 4. **User Login stage** — optional, but recommended: logs them into Authentik right
@@ -123,11 +126,28 @@ then pick `sauciety-invite-enrollment` from step 1. Fill in:
   inviting someone who won't check their email right away)
 - **Single use**: leave checked, so the link can't be reused by someone else once your
   invitee has enrolled
+- **Custom attributes**: this is where the recipient's email actually gets attached to
+  them. It's not linked to the "Send via Email" address you'll type in the next step —
+  those are two separate fields, so you're typing the same address twice. Enter (YAML):
+
+  ```yaml
+  email: cousin@example.com
+  ```
+
+  This fills the hidden `email` prompt field from step 1, and the User Write stage
+  picks it up as the new user's email automatically, since `email` is one of the field
+  keys it recognizes directly on the User model.
+
+  Note this only sets it on the **Authentik** user record. Sauciety itself doesn't
+  currently read email at all — `session.user.email` is deliberately left commented
+  out in `src/auth.ts` — so this is purely for your own admin-side records (Directory →
+  Users) unless you later wire that field through to Sauciety too.
 
 ## 3. Send it
 
-The invitation wizard's last step offers **Send via Email** — enter their address,
-pick the default "Invitation" template, send. This only works if you did step 0.
+The invitation wizard's last step offers **Send via Email** — enter their address
+(same one as **Custom attributes** above), pick the default "Invitation" template,
+send. This only works if you did step 0.
 
 Without step 0, copy the generated invite URL instead (looks like
 `https://auth.turbotonio.com/if/flow/sauciety-invite-enrollment/?itoken=...`) and send
@@ -183,3 +203,4 @@ whatever Authentik/Traefik hands it via `event.locals.auth()`.
 - [Manage applications | authentik docs](https://docs.goauthentik.io/add-secure-apps/applications/manage_apps/)
 - [User write stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_write/)
 - [Redirect stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/redirect/)
+- [Prompt stage | authentik docs](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/prompt/)

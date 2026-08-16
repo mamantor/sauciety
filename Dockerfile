@@ -23,7 +23,7 @@ RUN corepack enable
 # Copy build output + minimal deps
 COPY --from=build /app/build ./build
 COPY --from=build /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 EXPOSE 3000
 CMD ["node", "build"]

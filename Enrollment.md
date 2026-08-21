@@ -212,23 +212,24 @@ in `INSTALLED_APPS` and isn't available in Authentik's Django setup; using it th
 send). After editing, only the worker needs a restart to pick up the change — no
 rebuild.
 
-**The logo is a plain hosted `<img>` pointing at `https://sauciety.turbotonio.com/favicon.png`**
-— not pulled from Authentik's Brand config, and not inlined as a base64 `data:` URI
-either (that was tried first and rejected: several mail clients, notably Outlook,
-strip `data:` URIs from HTML email entirely, rendering a broken-image icon even
-though it looks fine in a browser). The `cid:logo` mechanism `base.html` normally
-relies on attaches whatever PNG lives at the fixed in-container path
-`web/dist/assets/icons/icon_left_brand.png` (see
+**The logo is a plain hosted `<img>` pointing at
+`https://sauciety.turbotonio.com/turbotonio-wordmark.png`** (the "turbo tonio" script
+wordmark, `static/turbotonio-wordmark.png` in this repo) — not pulled from Authentik's
+Brand config, and not inlined as a base64 `data:` URI either (that was tried first and
+rejected: several mail clients, notably Outlook, strip `data:` URIs from HTML email
+entirely, rendering a broken-image icon even though it looks fine in a browser). The
+`cid:logo` mechanism `base.html` normally relies on attaches whatever PNG lives at the
+fixed in-container path `web/dist/assets/icons/icon_left_brand.png` (see
 [`stages/email/utils.py`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/utils.py)) —
 that's Authentik's own default admin-UI brand icon baked into the image, not
 necessarily whatever's set as the "Turbo Tonio" brand's Logo in **System → Brands**;
 there's no confirmed mechanism by which uploading a Brand logo overwrites that file —
-so that path was skipped too. `static/favicon.png` in this repo (served by SvelteKit
-at the app's root, so publicly reachable at that URL with no auth) happens to already
-be byte-identical to `custom-data/media/public/branding/sauciety-logo.png`, which is
-how the email template ended up pointing at it instead of adding a duplicate file. To
-swap the logo image later: replace `static/favicon.png` (or point the template's
-`<img src>` at wherever the new file is publicly hosted).
+so that path was skipped too. Since `static/` is served by SvelteKit straight off the
+app's root with no auth, anything dropped there becomes a stable, publicly reachable
+URL — the same pattern `static/favicon.png` already used before this file replaced it
+as the email's logo. To swap the logo image later: replace
+`static/turbotonio-wordmark.png` (or point the template's `<img src>` at wherever the
+new file is publicly hosted).
 
 If you ever need to redo the `/data` mount from scratch (e.g. on the Pi): the
 directory must be empty when `authentik-server` first starts against it, or the Files

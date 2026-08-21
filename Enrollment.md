@@ -182,9 +182,11 @@ it to them yourself.
 ## 4. The invite email is branded (already done)
 
 `custom-templates/sauciety-invitation.html` exists in the repo — a Sauciety-branded
-version of Authentik's default invitation email (French wording, the ribbon's orange
-`#cc5933` on the accept button instead of the default blue). Both `authentik-server`
-and `authentik-worker` mount `./custom-templates:/templates` — the fixed container path
+version of Authentik's default invitation email: cream page background, white card,
+Playfair-Display-style serif heading, the site's terracotta `#cc5933` accent on the
+button, and the Sauciety logo, styled to echo the home page's look (the small
+line-flanked icon above the "Au Menu" heading). Both `authentik-server` and
+`authentik-worker` mount `./custom-templates:/templates` — the fixed container path
 Authentik reads custom templates from, no admin-UI upload option — in both
 `docker-compose.local-authentik.yml` and `docker-compose.prod.yml`. Verified on the
 local stack: it shows up as **"Custom Template: sauciety-invitation.html"** in the
@@ -196,21 +198,37 @@ mount and the template file come along with it.
 field defaults to the built-in "Invitation" — change it to
 **"Custom Template: sauciety-invitation.html"**.
 
-**To edit the wording further**: it's a Django template extending Authentik's shared
-email layout ([`base.html`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/base.html)),
-overriding two blocks — `content` (main body) and `sub_content` (the copyable-link
-fallback text). Available variables: `{{ host }}`, `{{ url }}` (the accept-invite
-link — keep this one, it's the whole point), and `{{ expires }}` (paired with Django's
-`naturaltime` filter for "in 2 days" style phrasing). After editing, only the worker
-needs a restart to pick up the change — no rebuild.
+**It's a full standalone HTML document, not an extension of Authentik's `base.html`
+layout.** An earlier version extended Authentik's shared
+[`base.html`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/templates/email/base.html)
+and only overrode its `content`/`sub_content` blocks, but that layout hardcodes a
+"Powered by authentik" footer and a page background outside of those blocks — no way
+to override either without abandoning `{% extends %}` entirely, which is what this
+version does. Available variables: `{{ host }}`, `{{ url }}` (the accept-invite link —
+keep this one, it's the whole point), and `{{ expires }}` (formatted with Django's
+built-in `date` filter — **not** `naturaltime`, which needs `django.contrib.humanize`
+in `INSTALLED_APPS` and isn't available in Authentik's Django setup; using it throws
+`TemplateSyntaxError: Invalid filter: 'naturaltime'` and silently kills the whole
+send). After editing, only the worker needs a restart to pick up the change — no
+rebuild.
 
-**The logo in the email is already the Sauciety "tt" icon too.** Separate from the
-template mount, `./custom-data:/data` is mounted on `authentik-server` and holds
-`media/public/branding/sauciety-logo.png`, set as the "Turbo Tonio" brand's Logo and
-Favicon (**System → Brands**). The template's `content`/`sub_content` blocks don't
-touch `logo_url` (inherited from `base.html`'s `{% block logo_url %}cid:logo{% endblock %}`),
-so the brand's current logo flows through to the email automatically — no template
-edit needed if you change the logo later, just re-set it on the Brand.
+**The logo is a plain hosted `<img>` pointing at `https://sauciety.turbotonio.com/favicon.png`**
+— not pulled from Authentik's Brand config, and not inlined as a base64 `data:` URI
+either (that was tried first and rejected: several mail clients, notably Outlook,
+strip `data:` URIs from HTML email entirely, rendering a broken-image icon even
+though it looks fine in a browser). The `cid:logo` mechanism `base.html` normally
+relies on attaches whatever PNG lives at the fixed in-container path
+`web/dist/assets/icons/icon_left_brand.png` (see
+[`stages/email/utils.py`](https://github.com/goauthentik/authentik/blob/main/authentik/stages/email/utils.py)) —
+that's Authentik's own default admin-UI brand icon baked into the image, not
+necessarily whatever's set as the "Turbo Tonio" brand's Logo in **System → Brands**;
+there's no confirmed mechanism by which uploading a Brand logo overwrites that file —
+so that path was skipped too. `static/favicon.png` in this repo (served by SvelteKit
+at the app's root, so publicly reachable at that URL with no auth) happens to already
+be byte-identical to `custom-data/media/public/branding/sauciety-logo.png`, which is
+how the email template ended up pointing at it instead of adding a duplicate file. To
+swap the logo image later: replace `static/favicon.png` (or point the template's
+`<img src>` at wherever the new file is publicly hosted).
 
 If you ever need to redo the `/data` mount from scratch (e.g. on the Pi): the
 directory must be empty when `authentik-server` first starts against it, or the Files

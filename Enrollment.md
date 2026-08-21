@@ -105,13 +105,23 @@ makes it exist, it won't do anything until it's bound):
 3. **User Write stage** — leave defaults. This is what actually creates the account
    from whatever the Prompt stage collected.
 4. **User Login stage** — optional, but recommended: logs them into Authentik right
-   after enrolling instead of making them log in separately. Combined with the
-   Redirect stage below, this means they land on Sauciety already authenticated —
-   no separate login step at all.
+   after enrolling instead of making them log in separately.
 5. **Redirect stage** — sends their browser to Sauciety once everything above is
-   done. Set **Static target** to `https://sauciety.turbotonio.com/` (any other value
-   than the special `ak-flow://...` format runs it in "static" mode, i.e. a fixed
-   URL rather than handing off to another flow, which is what you want here).
+   done. Set **Static target** to `https://sauciety.turbotonio.com/?welcome=1` (any
+   other value than the special `ak-flow://...` format runs it in "static" mode, i.e.
+   a fixed URL rather than handing off to another flow, which is what you want here).
+
+   **The `?welcome=1` matters — don't drop it.** Authentik's session (from the stage
+   above) and Sauciety's own session are two entirely separate things: Sauciety
+   authenticates via its own Auth.js/OIDC flow (`src/auth.ts`), not via Authentik's
+   session cookie or Traefik forward-auth (the `sauciety` app's Traefik router in
+   `docker-compose.prod.yml` has no `authentik@docker` middleware attached — only the
+   Traefik dashboard and the `whoami` demo router do). A plain redirect to `/` lands
+   on an unauthenticated homepage; nothing about it tells Sauciety a user exists.
+   `?welcome=1` is what `src/routes/+layout.svelte` looks for on mount to silently run
+   that OIDC handshake itself (the same one the menu's "Connexion" button triggers) —
+   SSO makes it instant since Authentik already has them logged in, no password
+   prompt.
 
 Then **Flows & Stages → Flows → Create**:
 
@@ -273,11 +283,13 @@ already has access the moment they finish — no separate step per invite.
 
 They open the link, land on your Prompt stage, type in a nickname and password, and
 their Authentik account exists — already in the `sauciety-users` group if you set up
-step 4b. With the User Login + Redirect stages from step 1, that's the whole thing:
-they never see a separate login screen, the flow logs them into Authentik and drops
-them straight onto `sauciety.turbotonio.com`, already recognized by Authentik/Traefik's
-forward-auth. Nothing on the Sauciety side needs to change — it already just trusts
-whatever Authentik/Traefik hands it via `event.locals.auth()`.
+step 4b. With the User Login + Redirect stages from step 1, they never see a separate
+login _screen_ — but Authentik's session and Sauciety's session are still two
+different things (see the `?welcome=1` note under step 1.5), so the redirect lands on
+`sauciety.turbotonio.com/?welcome=1`, and `+layout.svelte` silently completes
+Sauciety's own OIDC handshake in the background using the Authentik session they just
+got. Net effect is the same as "no separate login step" — just implemented on the
+Sauciety side rather than at the reverse-proxy layer.
 
 ## Sources
 

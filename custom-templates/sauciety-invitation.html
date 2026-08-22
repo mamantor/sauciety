@@ -19,6 +19,14 @@
         .text-body { color: #4a3728 !important; }
         .text-muted { color: #8a7862 !important; }
       }
+      /* Gmail tags any element it force-recolored for dark mode with
+         data-ogsc/data-ogsb - this overrides Gmail's own forced colors back
+         to ours, on top of the background-image trick above. */
+      [data-ogsc] .bg-page, [data-ogsb] .bg-page { background-color: #f8f6f1 !important; }
+      [data-ogsc] .bg-card, [data-ogsb] .bg-card { background-color: #fcfbf8 !important; }
+      [data-ogsc] .text-heading, [data-ogsb] .text-heading { color: #3a241a !important; }
+      [data-ogsc] .text-body, [data-ogsb] .text-body { color: #4a3728 !important; }
+      [data-ogsc] .text-muted, [data-ogsb] .text-muted { color: #8a7862 !important; }
     </style>
   </head>
   <body style="margin: 0; padding: 0; background-color: #f8f6f1;" bgcolor="#f8f6f1">

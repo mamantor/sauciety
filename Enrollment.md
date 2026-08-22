@@ -261,6 +261,17 @@ uncoordinated ways:
   color kept as a fallback for when images are blocked. This is a well-known,
   Gmail-specific email-dev workaround — the underlying colors are the same ones used
   everywhere else, just delivered as an image so Gmail's heuristic leaves them alone.
+- **Fourth layer, also Gmail**: even alongside the background-image, Gmail can still
+  force-recolor CSS `background-color`/`color` declarations it doesn't like, tagging
+  the elements it touched with `data-ogsc`/`data-ogsb` attributes. The stylesheet has
+  `[data-ogsc] .bg-page`-style selectors targeting those attributes specifically, to
+  override Gmail's own forced colors back to the intended palette.
+
+**If the background still looks off (e.g. a green/cyan tint) after all of the above**,
+it's likely not fixable from the template at all: Gmail has a per-account/device
+setting (**Settings → Theme → Dark theme** → image handling) that dims images when
+dark theme is active, applied client-side after the (correctly light-colored) image is
+delivered. Check that setting before assuming the template is still wrong.
 
 If you ever need to redo the `/data` mount from scratch (e.g. on the Pi): the
 directory must be empty when `authentik-server` first starts against it, or the Files

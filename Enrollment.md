@@ -241,6 +241,27 @@ as the email's logo. To swap the logo image later: replace
 `static/turbotonio-wordmark.png` (or point the template's `<img src>` at wherever the
 new file is publicly hosted).
 
+**The cream/card backgrounds fight mail clients' auto-dark-mode.** Several layers were
+needed, because different clients auto-darken light HTML email in different,
+uncoordinated ways:
+
+- `<meta name="color-scheme" content="light">` and
+  `<meta name="supported-color-schemes" content="light">` in `<head>` — opts out
+  clients (Outlook, Apple Mail) that respect these hints.
+- A `@media (prefers-color-scheme: dark)` block re-asserting the same light colors
+  with `!important`, plus `bgcolor` HTML attributes alongside the CSS
+  `background-color` — belt-and-suspenders for clients that apply dark styling
+  regardless of the meta tags above.
+- **Gmail needed a third layer**: Gmail ignores the `color-scheme` meta tags
+  entirely and overrides solid CSS background colors close to white even with
+  `!important`, but it doesn't touch background **images**. `static/email-bg-page.png`
+  and `static/email-bg-card.png` (tiny solid-color PNGs, `#f8f6f1` and `#fcfbf8`,
+  same colors as `src/app.css`'s `--background`/`--card`) are set as the
+  `background`/`background-image` on the two wrapping `<table>`s, with the flat CSS
+  color kept as a fallback for when images are blocked. This is a well-known,
+  Gmail-specific email-dev workaround — the underlying colors are the same ones used
+  everywhere else, just delivered as an image so Gmail's heuristic leaves them alone.
+
 If you ever need to redo the `/data` mount from scratch (e.g. on the Pi): the
 directory must be empty when `authentik-server` first starts against it, or the Files
 page (**Customization → Files**) fails with "Configured file backend does not support

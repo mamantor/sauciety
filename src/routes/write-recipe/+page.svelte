@@ -115,16 +115,22 @@
 		reader.readAsDataURL(file);
 	}
 
+	const MAX_IMAGE_DIMENSION = 2200;
+
 	async function saveimage() {
 		return new Promise((resolve, reject) => {
 			const img = new Image();
 			img.src = base64RawImage;
 			img.onload = () => {
+				const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(cropArea.width, cropArea.height));
+				const outputWidth = Math.round(cropArea.width * scale);
+				const outputHeight = Math.round(cropArea.height * scale);
+
 				const canvas = document.createElement('canvas');
 				const ctx = canvas.getContext('2d');
 				if (!ctx) return reject('Canvas context not available');
-				canvas.width = cropArea.width;
-				canvas.height = cropArea.height;
+				canvas.width = outputWidth;
+				canvas.height = outputHeight;
 				ctx.drawImage(
 					img,
 					cropArea.x,
@@ -133,8 +139,8 @@
 					cropArea.height,
 					0,
 					0,
-					cropArea.width,
-					cropArea.height
+					outputWidth,
+					outputHeight
 				);
 				canvas.toBlob(
 					(blob) => {

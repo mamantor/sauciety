@@ -151,6 +151,7 @@ services:
       ORIGIN: https://sauciety.turbotonio.com
       PROTOCOL_HEADER: x-forwarded-proto
       HOST_HEADER: x-forwarded-host
+      BODY_SIZE_LIMIT: 8M
 
       AUTH_URL: 'https://sauciety.turbotonio.com'
       AUTH_TRUST_HOST: 'true'
